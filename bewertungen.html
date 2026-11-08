@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bewertungen | ReiseGlück Reisebüro</title>
+<meta name="description" content="Beispielbewertungen für dieses Demo-Projekt: Durchschnitt, Verteilung, Filter nach Reiseart und eigene Bewertung schreiben.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E2449">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="ReiseGlück Reisebüro (Demo)">
+<meta property="og:title" content="Bewertungen | ReiseGlück Reisebüro">
+<meta property="og:description" content="Beispielbewertungen für dieses Demo-Projekt: Durchschnitt, Verteilung, Filter nach Reiseart und eigene Bewertung schreiben.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css?v=6">
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<header class="site-header">
+  <div class="frame">
+    <a class="brand" href="index.html" aria-label="ReiseGlück Reisebüro, zur Startseite">
+      <img class="logo-dark" src="assets/logo/logo.svg" alt="" width="176" height="40">
+      <img class="logo-white" src="assets/logo/logo-white.svg" alt="" width="176" height="40">
+    </a>
+    <nav class="nav-main" aria-label="Hauptnavigation">
+        <a href="reisen.html">Reisen</a>
+        <a href="preise.html">Preise</a>
+        <a href="bewertungen.html" aria-current="page">Bewertungen</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-sm header-cta" href="buchen.html">Reise buchen</a>
+      <button class="menu-btn" type="button" data-menu-open aria-expanded="false" aria-controls="drawer"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#menu"/></svg><span class="menu-label">Menü</span></button>
+    </div>
+  </div>
+</header>
+<div class="drawer on-dark" id="drawer" hidden>
+  <div class="drawer-backdrop" data-menu-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menü">
+    <div class="drawer-top">
+      <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="158" height="36">
+      <button class="menu-btn" type="button" data-menu-close><svg class="i" aria-hidden="true"><use href="assets/icons.svg#close"/></svg><span class="menu-label">Schließen</span></button>
+    </div>
+    <nav aria-label="Alle Seiten">
+      <ol>
+          <li><a href="index.html">Start</a></li>
+          <li><a href="reisen.html">Reisen</a></li>
+          <li><a href="preise.html">Leistungen & Preise</a></li>
+          <li><a href="buchen.html">Reise buchen</a></li>
+          <li><a href="bewertungen.html" aria-current="page">Bewertungen</a></li>
+          <li><a href="beratung.html">Beratung & Anfrage</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+      </ol>
+    </nav>
+    <div class="drawer-foot">
+      <p><a class="btn btn-block" href="buchen.html">Reise buchen</a></p>
+      <p>Lieber erst reden? <a href="beratung.html">Kostenlose Beratung</a><br><a href="tel:+493000000000">030 000 000 00</a></p>
+    </div>
+  </div>
+</div>
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="frame">
+    <p class="crumbs"><a href="index.html">Start</a> / Bewertungen</p>
+    <p class="label">Bewertungen</p>
+    <h1 id="page-title">Erfahrungen mit <span class="k">ReiseGlück</span></h1>
+    <p class="lead">Lesen Sie, wie andere ihre Reise erlebt haben, oder schreiben Sie selbst eine Bewertung.</p>
+  </div>
+</section>
+
+<section class="section ruled" aria-label="Bewertungen und Übersicht">
+  <div class="frame">
+    <div class="demo-note"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#info"/></svg><p><strong>Beispielbewertungen für dieses Demo-Projekt.</strong> Die Marke ist fiktiv, Namen und Texte sind erfunden. In der echten Version stehen hier geprüfte Bewertungen von Kundinnen und Kunden.</p></div>
+    <div class="rv-layout">
+      <aside class="rv-summary" aria-labelledby="rv-sum-title">
+        <h2 id="rv-sum-title" class="label" style="font-size:.75rem;letter-spacing:.14em">Übersicht</h2>
+        <div class="rv-avg"><strong id="rv-avg">–</strong><div><span id="rv-avg-stars"></span><div class="note" id="rv-count"></div></div></div>
+        <ul class="rv-bars" id="rv-bars" aria-label="Verteilung der Sterne"></ul>
+        <p class="note">Durchschnitt und Verteilung werden aus den angezeigten Bewertungen berechnet.</p>
+        <a class="btn btn-block" href="#schreiben">Bewertung schreiben</a>
+      </aside>
+      <div>
+        <div class="rv-tools">
+          <div class="chips" data-rv-filter role="group" aria-label="Nach Reiseart filtern">
+            <button class="chip" type="button" data-filter="alle" aria-pressed="true">Alle</button>
+            <button class="chip" type="button" data-filter="pauschal" aria-pressed="false">Pauschal</button>
+            <button class="chip" type="button" data-filter="familie" aria-pressed="false">Familie</button>
+            <button class="chip" type="button" data-filter="staedtereise" aria-pressed="false">Städtereise</button>
+            <button class="chip" type="button" data-filter="kreuzfahrt" aria-pressed="false">Kreuzfahrt</button>
+            <button class="chip" type="button" data-filter="service" aria-pressed="false">Service</button>
+          </div>
+          <div class="field" style="margin:0;min-width:180px">
+            <label for="rv-sort" class="sr-only">Sortieren</label>
+            <select id="rv-sort" class="input">
+              <option value="neueste">Neueste zuerst</option>
+              <option value="beste">Beste zuerst</option>
+            </select>
+          </div>
+        </div>
+        <p id="rv-status" class="sr-only" aria-live="polite"></p>
+        <div class="rv-list" id="rv-list"></div>
+        <noscript><p class="note">Die Bewertungen werden mit JavaScript geladen.</p></noscript>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section ruled tint" id="schreiben" aria-labelledby="write-title">
+  <div class="frame two-col">
+    <div>
+      <p class="label">Bewertung schreiben</p>
+      <h2 id="write-title">Wie war Ihre Reise?</h2>
+      <p class="lead">Ihr Feedback hilft anderen bei der Entscheidung und uns beim Planen.</p>
+      <div class="demo-note" style="margin-top:24px"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#lock"/></svg><p><strong>Demo:</strong> Wird nur in Ihrem Browser gespeichert. In der echten Version prüft das Reisebüro jede Bewertung vor der Veröffentlichung.</p></div>
+      <p class="note">Links und E-Mail-Adressen werden automatisch entfernt.</p>
+    </div>
+    <div>
+      <div class="success-box" id="rv-done" hidden role="status">
+        <h3>Danke für Ihre Bewertung.</h3>
+        <p>Sie steht jetzt ganz oben in der Liste, markiert als „Ihre Bewertung“. Demo: Wird nur in Ihrem Browser gespeichert. In der echten Version prüft das Reisebüro jede Bewertung vor der Veröffentlichung.<span id="rv-done-store"></span></p>
+      </div>
+      <form class="form-card" id="rv-form" novalidate>
+        <div class="err-summary" tabindex="-1" hidden role="alert"><h2></h2><ul></ul></div>
+        <div class="row-2">
+          <div class="field">
+            <label for="rv-name">Vorname <span class="opt">(optional)</span></label>
+            <input class="input" id="rv-name" name="rv-name" type="text" maxlength="40" autocomplete="given-name" aria-describedby="rv-name-err">
+            <p class="err" id="rv-name-err" aria-live="polite"></p>
+          </div>
+          <div class="field">
+            <label for="rv-typ">Reiseart</label>
+            <select class="input" id="rv-typ" name="rv-typ" aria-describedby="rv-typ-err" required>
+              <option value="">Bitte wählen</option>
+              <option value="pauschal">Pauschal</option>
+              <option value="familie">Familie</option>
+              <option value="staedtereise">Städtereise</option>
+              <option value="kreuzfahrt">Kreuzfahrt</option>
+              <option value="service">Service</option>
+            </select>
+            <p class="err" id="rv-typ-err" aria-live="polite"></p>
+          </div>
+        </div>
+        <fieldset class="field" id="rv-sterne" aria-describedby="rv-sterne-err">
+          <legend class="flabel">Ihre Sterne</legend>
+          <div class="star-input">
+            <input type="radio" name="rv-sterne" id="rv-s1" value="1"><label for="rv-s1"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#star"/></svg><span class="sr-only">1 Stern</span></label>
+            <input type="radio" name="rv-sterne" id="rv-s2" value="2"><label for="rv-s2"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#star"/></svg><span class="sr-only">2 Sterne</span></label>
+            <input type="radio" name="rv-sterne" id="rv-s3" value="3"><label for="rv-s3"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#star"/></svg><span class="sr-only">3 Sterne</span></label>
+            <input type="radio" name="rv-sterne" id="rv-s4" value="4"><label for="rv-s4"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#star"/></svg><span class="sr-only">4 Sterne</span></label>
+            <input type="radio" name="rv-sterne" id="rv-s5" value="5"><label for="rv-s5"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#star"/></svg><span class="sr-only">5 Sterne</span></label>
+          </div>
+          <p class="hint">Mit den Pfeiltasten auswählen.</p>
+          <p class="err" id="rv-sterne-err" aria-live="polite"></p>
+        </fieldset>
+        <div class="field">
+          <label for="rv-titel">Titel</label>
+          <input class="input" id="rv-titel" name="rv-titel" type="text" maxlength="100" aria-describedby="rv-titel-hint rv-titel-err" required>
+          <p class="hint" id="rv-titel-hint">3 bis 80 Zeichen, zum Beispiel „Entspannte Woche auf Mallorca“.</p>
+          <p class="err" id="rv-titel-err" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label for="rv-text">Ihre Erfahrung</label>
+          <textarea class="input" id="rv-text" name="rv-text" rows="6" maxlength="900" aria-describedby="rv-text-count rv-text-err" required></textarea>
+          <p class="hint" id="rv-text-count">0 / 800 Zeichen</p>
+          <p class="err" id="rv-text-err" aria-live="polite"></p>
+        </div>
+        <div class="field">
+          <label class="check" for="rv-consent"><input type="checkbox" id="rv-consent" name="rv-consent" aria-describedby="rv-consent-err"><span>Ich bin einverstanden, dass meine Bewertung mit Vorname (falls angegeben) angezeigt wird. Details in der <a href="datenschutz.html">Datenschutzerklärung</a>.</span></label>
+          <p class="err" id="rv-consent-err" aria-live="polite"></p>
+        </div>
+        <button class="btn" type="submit">Bewertung abschicken</button>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer on-dark">
+  <div class="frame">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="194" height="44" loading="lazy">
+        <p>Die Welt wartet auf Sie! Ihr Traumurlaub, persönlich geplant, von Anfang bis Ende.</p>
+        <ul class="contact-lines">
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#phone"/></svg><a href="tel:+493000000000">030 000 000 00</a></li>
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#mail"/></svg><a href="mailto:info@reiseglueck.example">info@reiseglueck.example</a></li>
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#pin"/></svg><span>Musterstraße 1, 10115 Berlin (Beispiel)</span></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Reisen</h2>
+        <ul>
+          <li><a href="reisen.html">Angebote und Reiseziele</a></li>
+          <li><a href="preise.html">Leistungen &amp; Preise</a></li>
+          <li><a href="buchen.html?item=lastminute">Last Minute</a></li>
+          <li><a href="buchen.html?item=familie">Familienurlaub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Service</h2>
+        <ul>
+          <li><a href="beratung.html">Kostenlose Beratung</a></li>
+          <li><a href="buchen.html">Reise buchen</a></li>
+          <li><a href="bewertungen.html">Bewertungen</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Öffnungszeiten</h2>
+        <ul class="hours">
+  <li data-day="1,2,3,4,5"><span class="day">Mo–Fr</span><span>09:00–18:00 Uhr</span></li>
+  <li data-day="6"><span class="day">Sa</span><span>09:00–13:00 Uhr</span></li>
+  <li data-day="0"><span class="day">So</span><span>geschlossen</span></li>
+</ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span data-year>2026</span> ReiseGlück Reisebüro · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a> · <a href="bildnachweise.html">Bildnachweise</a></span>
+      <span class="demo-flag"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#info"/></svg>Demo-Projekt · fiktive Marke</span>
+    </div>
+  </div>
+</footer>
+<script src="data/offers.js?v=6" defer></script>
+<script src="data/reviews.js?v=6" defer></script>
+<script src="assets/js/site.js?v=6" defer></script>
+<script src="assets/js/reviews.js?v=6" defer></script>
+</body>
+</html>

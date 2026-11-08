@@ -1,0 +1,8 @@
+# private working files, never publish
+brand/
+_work/
+.tastemaker/
+.claude/
+PROMPT.md
+Thumbs.db
+.DS_Store

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="ReiseGlück"><defs><clipPath id="rg-clip"><circle cx="29" cy="35" r="19.6"/></clipPath></defs><g>
+  <circle cx="29" cy="35" r="21" fill="#1D4583"/>
+  <g fill="none" stroke="#9CCBF2" stroke-width="2" stroke-linecap="round" clip-path="url(#rg-clip)">
+    <ellipse cx="29" cy="35" rx="8.5" ry="21"/>
+    <path d="M8 35H50M10.5 25.5Q29 31 47.5 25.5M10.5 44.5Q29 39 47.5 44.5"/>
+  </g>
+  <path d="M1 44C10.5 62 48.5 60 52 21.5 47 50.5 14.5 57 1 44Z" fill="#F09935" stroke="#fff" stroke-width="1.6" paint-order="stroke"/>
+  <path d="M9 0C9-1 7.6-1.5 6-1.5H2.2L-3.2-8.4H-5.9L-2.6-1.5H-6.6L-8.6-4.2H-10.3L-9.1 0-10.3 4.2H-8.6L-6.6 1.5H-2.6L-5.9 8.4H-3.2L2.2 1.5H6C7.6 1.5 9 1 9 0Z" transform="translate(53.4 13.4) rotate(-56) scale(.92)" fill="#1D4583"/>
+</g></svg>

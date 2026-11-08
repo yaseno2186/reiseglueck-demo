@@ -1,0 +1,28 @@
+Bildnachweise – ReiseGlück Reisebüro (Demo-Projekt)
+====================================================
+
+Alle Fotos stammen von Unsplash (https://unsplash.com) und stehen unter der
+Unsplash-Lizenz (https://unsplash.com/license): kostenlose Nutzung, auch
+kommerziell, ohne Pflicht zur Namensnennung. Wir nennen die Fotografinnen und
+Fotografen trotzdem gern. Bezogen über die Unsplash-API (download_asset),
+am 08.11.2026 als WebP komprimiert. Keine Unsplash+-Bilder.
+
+Datei (assets/img/)          Motiv                                   Fotograf/in            Quelle
+---------------------------------------------------------------------------------------------------------------
+strand-palmen-*.webp          Palmenstrand von oben                   Nattu Adnan            https://unsplash.com/photos/atSUvc1hMwk
+bucht-mittelmeer-*.webp       Sandbucht mit Felsen und Pinien         Mitch Botsford         https://unsplash.com/photos/2VJKXUKNvDA
+kueste-tuerkei-*.webp         Felsküste mit Pinien, Südtürkei         Visual Silence Photography  https://unsplash.com/photos/JprZwS6bIgg
+altstadt-gasse-*.webp         Gasse in einer italienischen Altstadt   Fabrizzio Moncada      https://unsplash.com/photos/j2jG1GvW6Uw
+kreuzfahrt-deck-*.webp        Schiffsdeck mit Blick aufs Meer         Melanie Chan           https://unsplash.com/photos/1P5mLWPwG8Q
+familie-strand-*.webp         Familie am Strand, von hinten           Natalya Zaritskaya     https://unsplash.com/photos/SIOdjcYotms
+paar-sonnenuntergang-*.webp   Paar am Meer im Sonnenuntergang         Anukrati Omar          https://unsplash.com/photos/NZFJYpkwIXc
+flug-wolken-*.webp            Flugzeugflügel über den Wolken          Johny Goerend          https://unsplash.com/photos/KB9r_hTzyeQ
+pool-liegen-*.webp            Holzliegen am Pool                      Thomas Couillard       https://unsplash.com/photos/WCaue4v5rYk
+strandkoerbe-*.webp           Strandkörbe an der Ostsee               Liona Toussaint        https://unsplash.com/photos/IL14rTHmgHc
+
+Nicht veröffentlicht (nur Stimmung, Lizenz unklar): brand/style-reference-resort.webp,
+brand/mood-mallorca-aerial.webp. Altes Logo brand/logo-flyer-welttraum.webp nur als
+Farbquelle genutzt, Name und Grafik wurden nicht übernommen.
+
+Logo, Icons und Illustrationen: eigene Vektorgrafiken für dieses Demo-Projekt.
+Schriften (selbst gehostet, SIL Open Font License): Bricolage Grotesque, Figtree, DM Mono.

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reise buchen: unverbindliche Anfrage | ReiseGlück Reisebüro</title>
+<meta name="description" content="In vier Schritten zur unverbindlichen Buchungsanfrage. Ihr persönlicher Berater prüft Verfügbarkeit und meldet sich bei Ihnen.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E2449">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="ReiseGlück Reisebüro (Demo)">
+<meta property="og:title" content="Reise buchen: unverbindliche Anfrage | ReiseGlück Reisebüro">
+<meta property="og:description" content="In vier Schritten zur unverbindlichen Buchungsanfrage. Ihr persönlicher Berater prüft Verfügbarkeit und meldet sich bei Ihnen.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css?v=6">
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<header class="site-header">
+  <div class="frame">
+    <a class="brand" href="index.html" aria-label="ReiseGlück Reisebüro, zur Startseite">
+      <img class="logo-dark" src="assets/logo/logo.svg" alt="" width="176" height="40">
+      <img class="logo-white" src="assets/logo/logo-white.svg" alt="" width="176" height="40">
+    </a>
+    <nav class="nav-main" aria-label="Hauptnavigation">
+        <a href="reisen.html">Reisen</a>
+        <a href="preise.html">Preise</a>
+        <a href="bewertungen.html">Bewertungen</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-sm header-cta" href="buchen.html">Reise buchen</a>
+      <button class="menu-btn" type="button" data-menu-open aria-expanded="false" aria-controls="drawer"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#menu"/></svg><span class="menu-label">Menü</span></button>
+    </div>
+  </div>
+</header>
+<div class="drawer on-dark" id="drawer" hidden>
+  <div class="drawer-backdrop" data-menu-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menü">
+    <div class="drawer-top">
+      <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="158" height="36">
+      <button class="menu-btn" type="button" data-menu-close><svg class="i" aria-hidden="true"><use href="assets/icons.svg#close"/></svg><span class="menu-label">Schließen</span></button>
+    </div>
+    <nav aria-label="Alle Seiten">
+      <ol>
+          <li><a href="index.html">Start</a></li>
+          <li><a href="reisen.html">Reisen</a></li>
+          <li><a href="preise.html">Leistungen & Preise</a></li>
+          <li><a href="buchen.html" aria-current="page">Reise buchen</a></li>
+          <li><a href="bewertungen.html">Bewertungen</a></li>
+          <li><a href="beratung.html">Beratung & Anfrage</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+      </ol>
+    </nav>
+    <div class="drawer-foot">
+      <p><a class="btn btn-block" href="buchen.html">Reise buchen</a></p>
+      <p>Lieber erst reden? <a href="beratung.html">Kostenlose Beratung</a><br><a href="tel:+493000000000">030 000 000 00</a></p>
+    </div>
+  </div>
+</div>
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="frame">
+    <p class="crumbs"><a href="index.html">Start</a> / Reise buchen</p>
+    <p class="label">Reise buchen</p>
+    <h1 id="page-title">Ihre Anfrage in <span class="k">vier Schritten</span></h1>
+    <p class="lead">Unverbindlich und in wenigen Minuten. Ihr persönlicher Berater prüft danach Verfügbarkeit und Preis und meldet sich bei Ihnen.</p>
+  </div>
+</section>
+
+<section class="section ruled tint" aria-label="Buchungsanfrage">
+  <div class="frame">
+    <div class="book-wrap" id="booking">
+      <div>
+        <div id="book-flow">
+          <ol class="progress" id="progress" aria-label="Fortschritt">
+            <li data-p="1"><span>Schritt 1<span class="p-name"> · Auswahl</span></span></li>
+            <li data-p="2"><span>Schritt 2<span class="p-name"> · Reisedetails</span></span></li>
+            <li data-p="3"><span>Schritt 3<span class="p-name"> · Kontakt</span></span></li>
+            <li data-p="4"><span>Schritt 4<span class="p-name"> · Zusammenfassung</span></span></li>
+          </ol>
+
+          <form class="form-card" id="book-form" novalidate>
+            <div class="err-summary" id="book-errors" tabindex="-1" hidden role="alert"><h2></h2><ul></ul></div>
+
+            <!-- STEP 1 -->
+            <div class="book-step" data-step="1">
+              <div class="step-head">
+                <h2 tabindex="-1">Was dürfen wir für Sie planen?</h2>
+                <p>Wählen Sie ein Angebot, ein Paket oder einen Service. Sie können die Auswahl später mit Ihrem Berater noch ändern.</p>
+              </div>
+              <div id="pick-groups" aria-describedby="item-err"></div>
+              <p class="err" id="item-err"></p>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="book-step" data-step="2" hidden>
+              <div class="step-head">
+                <h2 tabindex="-1">Wann und mit wem reisen Sie?</h2>
+                <p id="step2-intro">Grobe Angaben reichen. Ihr Berater klärt Details persönlich mit Ihnen.</p>
+              </div>
+              <p class="demo-badge" id="lm-note" hidden><svg class="i" aria-hidden="true"><use href="assets/icons.svg#clock"/></svg>Last Minute: Abreise innerhalb der nächsten 14 Tage</p>
+              <fieldset class="field">
+                <legend class="flabel">Reisedaten</legend>
+                <div class="radios-inline">
+                  <label class="pill-radio"><input type="radio" name="modus" value="fest" checked><span>Feste Reisedaten</span></label>
+                  <label class="pill-radio" id="modus-zeitraum-wrap"><input type="radio" name="modus" value="zeitraum"><span>Wunschzeitraum</span></label>
+                </div>
+              </fieldset>
+              <div id="dates-fixed" class="row-2">
+                <div class="field">
+                  <label for="abreise">Abreise <span class="opt" data-opt-service hidden>(optional)</span></label>
+                  <input class="input" type="date" id="abreise" name="abreise" aria-describedby="abreise-hint abreise-err">
+                  <p class="hint" id="abreise-hint">Frühestens heute.</p>
+                  <p class="err" id="abreise-err"></p>
+                </div>
+                <div class="field">
+                  <label for="rueckreise">Rückreise <span class="opt" data-opt-service hidden>(optional)</span></label>
+                  <input class="input" type="date" id="rueckreise" name="rueckreise" aria-describedby="rueckreise-hint rueckreise-err">
+                  <p class="hint" id="rueckreise-hint">Nach dem Abreisetag.</p>
+                  <p class="err" id="rueckreise-err"></p>
+                </div>
+              </div>
+              <div id="dates-range" class="field" hidden>
+                <label for="zeitraum">Wunschzeitraum <span class="opt" data-opt-service hidden>(optional)</span></label>
+                <input class="input" type="text" id="zeitraum" name="zeitraum" maxlength="80" placeholder="z. B. zweite Julihälfte, 10 bis 14 Tage" aria-describedby="zeitraum-err">
+                <p class="err" id="zeitraum-err"></p>
+              </div>
+              <div class="field">
+                <label class="check" for="flexibel"><input type="checkbox" id="flexibel" name="flexibel"><span>Zeitraum flexibel (ein paar Tage früher oder später sind möglich)</span></label>
+              </div>
+              <div class="row-2">
+                <div class="field">
+                  <span class="flabel" id="erw-label">Erwachsene</span>
+                  <div class="counter" role="group" aria-labelledby="erw-label">
+                    <button type="button" data-count="erwachsene" data-delta="-1" aria-label="Eine erwachsene Person weniger">−</button>
+                    <output id="erwachsene" aria-live="polite">2</output>
+                    <button type="button" data-count="erwachsene" data-delta="1" aria-label="Eine erwachsene Person mehr">+</button>
+                  </div>
+                  <p class="err" id="erwachsene-err"></p>
+                </div>
+                <div class="field">
+                  <span class="flabel" id="kid-label">Kinder <span class="opt">(0 bis 17 Jahre)</span></span>
+                  <div class="counter" role="group" aria-labelledby="kid-label">
+                    <button type="button" data-count="kinder" data-delta="-1" aria-label="Ein Kind weniger">−</button>
+                    <output id="kinder" aria-live="polite">0</output>
+                    <button type="button" data-count="kinder" data-delta="1" aria-label="Ein Kind mehr">+</button>
+                  </div>
+                </div>
+              </div>
+              <fieldset class="field" id="kids-ages-wrap" hidden>
+                <legend class="flabel">Alter der Kinder bei Rückreise</legend>
+                <div class="kids-ages" id="kids-ages"></div>
+              </fieldset>
+              <div class="row-2">
+                <div class="field">
+                  <label for="abflug">Abflughafen</label>
+                  <select class="input" id="abflug" name="abflug">
+                    <option value="Berlin (BER)">Berlin (BER)</option>
+                    <option value="Hamburg (HAM)">Hamburg (HAM)</option>
+                    <option value="Hannover (HAJ)">Hannover (HAJ)</option>
+                    <option value="Leipzig/Halle (LEJ)">Leipzig/Halle (LEJ)</option>
+                    <option value="Dresden (DRS)">Dresden (DRS)</option>
+                    <option value="Frankfurt (FRA)">Frankfurt (FRA)</option>
+                    <option value="Düsseldorf (DUS)">Düsseldorf (DUS)</option>
+                    <option value="München (MUC)">München (MUC)</option>
+                    <option value="Egal, Hauptsache günstig">Egal, Hauptsache günstig</option>
+                    <option value="Kein Flug nötig">Kein Flug nötig</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="zimmer">Zimmerwunsch</label>
+                  <select class="input" id="zimmer" name="zimmer">
+                    <option value="Doppelzimmer">Doppelzimmer</option>
+                    <option value="Einzelzimmer">Einzelzimmer</option>
+                    <option value="Familienzimmer">Familienzimmer</option>
+                    <option value="Zwei Zimmer nebeneinander">Zwei Zimmer nebeneinander</option>
+                    <option value="Suite">Suite</option>
+                    <option value="Kabine mit Balkon (Kreuzfahrt)">Kabine mit Balkon (Kreuzfahrt)</option>
+                    <option value="Noch offen">Noch offen</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="wuensche">Ihre Wünsche <span class="opt">(optional)</span></label>
+                <textarea class="input" id="wuensche" name="wuensche" rows="4" maxlength="1200" placeholder="z. B. ruhige Lage, Strand zu Fuß erreichbar, vegetarisches Essen" aria-describedby="wuensche-count wuensche-err"></textarea>
+                <p class="hint" id="wuensche-count">0 / 1000 Zeichen</p>
+                <p class="err" id="wuensche-err"></p>
+              </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="book-step" data-step="3" hidden>
+              <div class="step-head">
+                <h2 tabindex="-1">Wie erreicht Sie Ihr Berater?</h2>
+                <p>Wir nutzen Ihre Angaben nur, um Ihnen ein Angebot zu schicken.</p>
+              </div>
+              <div class="field">
+                <label for="name">Vor- und Nachname</label>
+                <input class="input" type="text" id="name" name="name" autocomplete="name" maxlength="80" aria-describedby="name-err">
+                <p class="err" id="name-err"></p>
+              </div>
+              <div class="row-2">
+                <div class="field">
+                  <label for="email">E-Mail</label>
+                  <input class="input" type="email" id="email" name="email" autocomplete="email" inputmode="email" maxlength="120" aria-describedby="email-err">
+                  <p class="err" id="email-err"></p>
+                </div>
+                <div class="field">
+                  <label for="telefon">Telefon <span class="opt">(optional)</span></label>
+                  <input class="input" type="tel" id="telefon" name="telefon" autocomplete="tel" inputmode="tel" maxlength="25" aria-describedby="telefon-hint telefon-err">
+                  <p class="hint" id="telefon-hint">Für einen Rückruf, falls Sie das lieber mögen.</p>
+                  <p class="err" id="telefon-err"></p>
+                </div>
+              </div>
+              <fieldset class="field">
+                <legend class="flabel">Wann erreichen wir Sie am besten?</legend>
+                <div class="radios-inline">
+                  <label class="pill-radio"><input type="radio" name="kontaktzeit" value="Egal" checked><span>Egal</span></label>
+                  <label class="pill-radio"><input type="radio" name="kontaktzeit" value="Vormittags (9–12 Uhr)"><span>Vormittags</span></label>
+                  <label class="pill-radio"><input type="radio" name="kontaktzeit" value="Nachmittags (12–16 Uhr)"><span>Nachmittags</span></label>
+                  <label class="pill-radio"><input type="radio" name="kontaktzeit" value="Abends (16–18 Uhr)"><span>Abends</span></label>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="book-step" data-step="4" hidden>
+              <div class="step-head">
+                <h2 tabindex="-1">Bitte prüfen Sie Ihre Anfrage</h2>
+                <p>Mit „Bearbeiten“ springen Sie zurück zum jeweiligen Schritt.</p>
+              </div>
+              <div id="summary" aria-live="polite"></div>
+              <div class="demo-note" style="margin-top:24px"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#headset"/></svg><p><strong>Unverbindliche Anfrage:</strong> Ihr persönlicher Berater prüft Verfügbarkeit und meldet sich. Gebucht wird erst, wenn Sie sein Angebot bestätigen.</p></div>
+              <div class="field">
+                <label class="check" for="consent"><input type="checkbox" id="consent" name="consent" aria-describedby="consent-err"><span>Ich bin einverstanden, dass ReiseGlück meine Angaben zur Bearbeitung dieser Anfrage verwendet. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</span></label>
+                <p class="err" id="consent-err"></p>
+              </div>
+            </div>
+
+            <div class="step-nav">
+              <button class="btn btn-ghost" type="button" id="btn-back"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#chev-l"/></svg>Zurück</button>
+              <button class="btn" type="submit" id="btn-next">Weiter <svg class="i i-arrow" aria-hidden="true"><use href="assets/icons.svg#arrow"/></svg></button>
+            </div>
+          </form>
+        </div>
+
+        <!-- CONFIRMATION -->
+        <div id="book-done" hidden>
+          <div class="step-head">
+            <p class="label">Anfrage erstellt</p>
+            <h2 tabindex="-1" id="done-title">Danke, Ihre Anfrage ist vorbereitet.</h2>
+            <p>Ihre Referenz: <strong class="mono" id="done-ref-inline"></strong>. In der echten Version meldet sich Ihr persönlicher Berater mit einem Angebot, das Sie in Ruhe prüfen können.</p>
+          </div>
+          <div class="demo-note"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#info"/></svg><p><strong>Demo: Es wurde nichts gesendet oder gespeichert.</strong> Ihre Eingaben wurden aus dem Browser gelöscht.</p></div>
+          <div id="done-pass"></div>
+          <div class="step-nav no-print">
+            <a class="btn btn-ghost" href="buchen.html">Neue Anfrage starten</a>
+            <button class="btn" type="button" id="btn-print"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#print"/></svg>Zusammenfassung drucken</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="book-aside" aria-labelledby="aside-title">
+        <div class="aside-card">
+          <h2 id="aside-title">Ihre Auswahl</h2>
+          <div id="aside-live" aria-live="polite">
+            <p class="note" id="aside-empty">Noch nichts gewählt.</p>
+            <div id="aside-sel" hidden>
+              <p style="margin:0;font-weight:650" id="aside-name"></p>
+              <p class="price" id="aside-price" style="margin:8px 0 4px"></p>
+              <p class="note" id="aside-detail" style="margin:0"></p>
+            </div>
+          </div>
+          <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+          <ul>
+            <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#check"/></svg>Unverbindlich und kostenlos anfragen</li>
+            <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#headset"/></svg>Ein persönlicher Berater prüft alles</li>
+            <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#lock"/></svg>Demo: Es wird nichts gesendet</li>
+          </ul>
+          <p class="note" style="margin:0">Fragen? <a href="tel:+493000000000">030 000 000 00</a></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer on-dark">
+  <div class="frame">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="194" height="44" loading="lazy">
+        <p>Die Welt wartet auf Sie! Ihr Traumurlaub, persönlich geplant, von Anfang bis Ende.</p>
+        <ul class="contact-lines">
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#phone"/></svg><a href="tel:+493000000000">030 000 000 00</a></li>
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#mail"/></svg><a href="mailto:info@reiseglueck.example">info@reiseglueck.example</a></li>
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#pin"/></svg><span>Musterstraße 1, 10115 Berlin (Beispiel)</span></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Reisen</h2>
+        <ul>
+          <li><a href="reisen.html">Angebote und Reiseziele</a></li>
+          <li><a href="preise.html">Leistungen &amp; Preise</a></li>
+          <li><a href="buchen.html?item=lastminute">Last Minute</a></li>
+          <li><a href="buchen.html?item=familie">Familienurlaub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Service</h2>
+        <ul>
+          <li><a href="beratung.html">Kostenlose Beratung</a></li>
+          <li><a href="buchen.html">Reise buchen</a></li>
+          <li><a href="bewertungen.html">Bewertungen</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Öffnungszeiten</h2>
+        <ul class="hours">
+  <li data-day="1,2,3,4,5"><span class="day">Mo–Fr</span><span>09:00–18:00 Uhr</span></li>
+  <li data-day="6"><span class="day">Sa</span><span>09:00–13:00 Uhr</span></li>
+  <li data-day="0"><span class="day">So</span><span>geschlossen</span></li>
+</ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span data-year>2026</span> ReiseGlück Reisebüro · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a> · <a href="bildnachweise.html">Bildnachweise</a></span>
+      <span class="demo-flag"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#info"/></svg>Demo-Projekt · fiktive Marke</span>
+    </div>
+  </div>
+</footer>
+<script src="data/offers.js?v=6" defer></script>
+<script src="data/reviews.js?v=6" defer></script>
+<script src="assets/js/site.js?v=6" defer></script>
+<script src="assets/js/booking.js?v=6" defer></script>
+</body>
+</html>
