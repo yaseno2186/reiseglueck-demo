@@ -28,6 +28,30 @@
   }
   window.RG_UI = { h: h, icon: icon };
 
+  /* ---------- Smooth scrolling (Lenis, self-hosted) ---------- */
+  var lenis = null;
+  if (window.Lenis && !reduce.matches) {
+    lenis = new window.Lenis({ duration: 1.15, easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }, smoothWheel: true, syncTouch: false, gestureOrientation: 'vertical' });
+    var rafLoop = function (time) { lenis.raf(time); requestAnimationFrame(rafLoop); };
+    requestAnimationFrame(rafLoop);
+    // same-page anchors: smooth scroll with header offset, then move focus for keyboard and screen-reader users
+    doc.addEventListener('click', function (e) {
+      var a = e.target.closest('a[href^="#"]');
+      if (!a || a.classList.contains('skip') || e.defaultPrevented) return;
+      var id = a.getAttribute('href').slice(1); if (!id) return;
+      var target = doc.getElementById(id); if (!target) return;
+      e.preventDefault();
+      var offset = -((doc.querySelector('.site-header') || { offsetHeight: 72 }).offsetHeight + 16);
+      lenis.scrollTo(target, { offset: offset, onComplete: function () {
+        if (!target.matches('a, button, input, select, textarea, [tabindex]')) target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });
+      } });
+      if (history.replaceState) history.replaceState(history.state, '', '#' + id);
+    });
+  }
+  window.RG_LENIS = lenis;
+  window.RG_UI.scrollToY = function (y) { if (lenis) lenis.scrollTo(y, { immediate: true }); else window.scrollTo({ top: y, behavior: 'auto' }); };
+
   /* ---------- Header: scrolled state ---------- */
   var body = doc.body;
   if (body.classList.contains('has-hero')) {
@@ -42,13 +66,13 @@
     var lastFocus = null;
     var focusables = function () { return drawer.querySelectorAll('a[href], button:not([disabled])'); };
     var close = function () {
-      drawer.classList.remove('open'); drawer.hidden = true; body.classList.remove('lock');
+      drawer.classList.remove('open'); drawer.hidden = true; body.classList.remove('lock'); if (lenis) lenis.start();
       openBtn.setAttribute('aria-expanded', 'false');
       if (lastFocus) lastFocus.focus();
     };
     var open = function () {
       lastFocus = doc.activeElement;
-      drawer.hidden = false; drawer.classList.add('open'); body.classList.add('lock');
+      drawer.hidden = false; drawer.classList.add('open'); body.classList.add('lock'); if (lenis) lenis.stop();
       openBtn.setAttribute('aria-expanded', 'true');
       var f = drawer.querySelector('button[data-menu-close]'); if (f) f.focus();
     };

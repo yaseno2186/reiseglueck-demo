@@ -305,7 +305,7 @@
       var hd = steps[state.step - 1].querySelector('h2');
       hd.focus({ preventScroll: true });
       var top = F('book-flow').getBoundingClientRect().top + window.scrollY - 100;
-      if (window.scrollY > top) window.scrollTo({ top: top, behavior: 'auto' });
+      if (window.scrollY > top) UI.scrollToY(top);
     }
   }
   function go(step, push) {
@@ -340,7 +340,7 @@
     doc.title = 'Anfrage ' + ref + ' erstellt | ReiseGlück';
     try { history.replaceState({ rgDone: true }, '', window.location.pathname); } catch (e) { }
     var t = F('done-title'); t.focus({ preventScroll: true });
-    window.scrollTo({ top: F('booking').getBoundingClientRect().top + window.scrollY - 100, behavior: 'auto' });
+    UI.scrollToY(F('booking').getBoundingClientRect().top + window.scrollY - 100);
   }
   F('btn-print').addEventListener('click', function () { window.print(); });
 

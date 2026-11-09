@@ -18,7 +18,7 @@
 <link rel="preload" href="assets/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="assets/img/strand-palmen-1200.webp" imagesrcset="assets/img/strand-palmen-1200.webp 1200w, assets/img/strand-palmen-2400.webp 2400w" imagesizes="100vw" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/style.css?v=8">
+<link rel="stylesheet" href="assets/css/style.css?v=9">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -59,7 +59,7 @@
 </header>
 <div class="drawer on-dark" id="drawer" hidden>
   <div class="drawer-backdrop" data-menu-close></div>
-  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menü">
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menü" data-lenis-prevent>
     <div class="drawer-top">
       <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="158" height="36">
       <button class="menu-btn" type="button" data-menu-close><svg class="i" aria-hidden="true"><use href="assets/icons.svg#close"/></svg><span class="menu-label">Schließen</span></button>
@@ -87,7 +87,6 @@
   <div class="hero-media">
     <img src="assets/img/strand-palmen-1200.webp" srcset="assets/img/strand-palmen-1200.webp 1200w, assets/img/strand-palmen-2400.webp 2400w" sizes="100vw" width="2400" height="1656" alt="Palmenstrand mit türkisem Meer, von oben fotografiert" fetchpriority="high" decoding="async">
   </div>
-  <div class="hero-lines" aria-hidden="true"><div class="frame"><span></span><span></span><span></span><span></span></div></div>
   <div class="frame hero-content">
     <p class="label" data-hero style="--d:0">Reisebüro in Berlin</p>
     <h1 id="hero-title" data-hero style="--d:1">Die Welt wartet auf <span class="k">Sie!</span></h1>
@@ -341,9 +340,10 @@
     </div>
   </div>
 </footer>
-<script src="data/offers.js?v=8" defer></script>
-<script src="data/reviews.js?v=8" defer></script>
-<script src="assets/js/site.js?v=8" defer></script>
-<script src="assets/js/reviews.js?v=8" defer></script>
+<script src="assets/js/vendor/lenis.min.js?v=9" defer></script>
+<script src="data/offers.js?v=9" defer></script>
+<script src="data/reviews.js?v=9" defer></script>
+<script src="assets/js/site.js?v=9" defer></script>
+<script src="assets/js/reviews.js?v=9" defer></script>
 </body>
 </html>

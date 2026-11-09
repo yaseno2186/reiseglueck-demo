@@ -17,7 +17,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/style.css?v=8">
+<link rel="stylesheet" href="assets/css/style.css?v=9">
 </head>
 <body>
 <a class="skip" href="#main">Zum Inhalt springen</a>
@@ -40,7 +40,7 @@
 </header>
 <div class="drawer on-dark" id="drawer" hidden>
   <div class="drawer-backdrop" data-menu-close></div>
-  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menü">
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menü" data-lenis-prevent>
     <div class="drawer-top">
       <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="158" height="36">
       <button class="menu-btn" type="button" data-menu-close><svg class="i" aria-hidden="true"><use href="assets/icons.svg#close"/></svg><span class="menu-label">Schließen</span></button>
@@ -204,8 +204,9 @@
     </div>
   </div>
 </footer>
-<script src="data/offers.js?v=8" defer></script>
-<script src="data/reviews.js?v=8" defer></script>
-<script src="assets/js/site.js?v=8" defer></script>
+<script src="assets/js/vendor/lenis.min.js?v=9" defer></script>
+<script src="data/offers.js?v=9" defer></script>
+<script src="data/reviews.js?v=9" defer></script>
+<script src="assets/js/site.js?v=9" defer></script>
 </body>
 </html>

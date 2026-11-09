@@ -26,3 +26,4 @@ Farbquelle genutzt, Name und Grafik wurden nicht übernommen.
 
 Logo, Icons und Illustrationen: eigene Vektorgrafiken für dieses Demo-Projekt.
 Schriften (selbst gehostet, SIL Open Font License): Bricolage Grotesque, Figtree, DM Mono.
+Sanftes Scrollen: Lenis 1.1.20 (darkroom.engineering), MIT-Lizenz, selbst gehostet (assets/js/vendor/).
