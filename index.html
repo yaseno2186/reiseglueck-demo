@@ -18,7 +18,7 @@
 <link rel="preload" href="assets/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="assets/img/strand-palmen-1200.webp" imagesrcset="assets/img/strand-palmen-1200.webp 1200w, assets/img/strand-palmen-2400.webp 2400w" imagesizes="100vw" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/style.css?v=6">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -110,24 +110,32 @@
       </div>
       <p data-reveal style="--d:1">Online buchen Sie Flug, Hotel und Transfer einzeln und hoffen, dass alles zusammenpasst. Bei uns plant eine Person alles, die Ihr Budget und Ihre Wünsche kennt.</p>
     </div>
-    <div class="facts">
-      <div class="fact" data-reveal style="--d:0">
-        <span class="fact-ico"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#headset"/></svg></span>
-        <div><span class="mono">01</span><h3>Ein Berater für alles</h3><p>Sie erklären Ihre Wünsche einmal. Ihr Berater merkt sie sich für die ganze Reise.</p></div>
-      </div>
-      <div class="fact" data-reveal style="--d:1">
-        <span class="fact-ico"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#suitcase"/></svg></span>
-        <div><span class="mono">02</span><h3>Flug, Hotel und Ausflüge in einem Paket</h3><p>Zeiten und Transfers sind aufeinander abgestimmt. Sie bekommen alle Unterlagen gebündelt.</p></div>
-      </div>
-      <div class="fact" data-reveal style="--d:2">
-        <span class="fact-ico"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#family"/></svg></span>
-        <div><span class="mono">03</span><h3>Für Paare, Familien und Gruppen</h3><p>Wir planen nach Ihrem Budget und sparen dabei nicht an der Qualität. Dazu kommen kurzfristige Last-Minute-Angebote.</p></div>
-      </div>
-      <div class="fact" data-reveal style="--d:3">
-        <span class="fact-ico"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#shield"/></svg></span>
-        <div><span class="mono">04</span><h3>Vor, während und nach der Reise</h3><p>Flug verschoben, Frage zum Transfer? Ihr Berater bleibt erreichbar, bis Sie wieder zu Hause sind.</p></div>
-      </div>
-    </div>
+    <ul class="stats">
+      <li class="stat" data-reveal style="--d:0">
+        <div class="stat-top"><span class="mono">01</span><svg class="i" aria-hidden="true"><use href="assets/icons.svg#headset"/></svg></div>
+        <p class="stat-fig">1</p>
+        <h3>Berater für Ihre ganze Reise</h3>
+        <p>Sie erklären Ihre Wünsche einmal. Ihr Berater merkt sie sich und bleibt erreichbar, vor, während und nach der Reise.</p>
+      </li>
+      <li class="stat" data-reveal style="--d:1">
+        <div class="stat-top"><span class="mono">02</span><svg class="i" aria-hidden="true"><use href="assets/icons.svg#suitcase"/></svg></div>
+        <p class="stat-fig">3 in 1</p>
+        <h3>Flug, Hotel und Ausflüge</h3>
+        <p>In einem Paket, mit abgestimmten Zeiten und Transfers. Alle Unterlagen kommen gebündelt.</p>
+      </li>
+      <li class="stat" data-reveal style="--d:2">
+        <div class="stat-top"><span class="mono">03</span><svg class="i" aria-hidden="true"><use href="assets/icons.svg#chat"/></svg></div>
+        <p class="stat-fig">0 €</p>
+        <h3>für das erste Gespräch</h3>
+        <p>Lernen Sie uns kennen, bevor Sie sich entscheiden. Für Paare, Familien, Alleinreisende und Gruppen.</p>
+      </li>
+      <li class="stat" data-reveal style="--d:3">
+        <div class="stat-top"><span class="mono">04</span><svg class="i" aria-hidden="true"><use href="assets/icons.svg#clock"/></svg></div>
+        <p class="stat-fig">14 Tage</p>
+        <h3>reichen für Last Minute</h3>
+        <p>Kurzfristig weg? Wir planen auch Abreisen in den nächsten zwei Wochen, günstig und ohne Abstriche bei der Qualität.</p>
+      </li>
+    </ul>
   </div>
 </section>
 
@@ -140,7 +148,7 @@
       </div>
       <p data-reveal style="--d:1">Beispielpreise (Demo) pro Person, 7 Nächte im Doppelzimmer, sofern nicht anders angegeben. Leistungen je nach Angebot, Verfügbarkeit vorbehalten.</p>
     </div>
-    <div class="cards" data-cards="mallorca, tuerkei-familie, lastminute, staedtereise"></div>
+    <div class="cards featured" data-cards="mallorca, tuerkei-familie, lastminute, staedtereise"></div>
     <noscript><p class="note">Die Angebote werden mit JavaScript geladen. Alle Preise finden Sie auch unter <a href="preise.html">Leistungen &amp; Preise</a>.</p></noscript>
     <p class="mt-8"><a class="link-arrow" href="reisen.html">Alle Reisearten ansehen <svg class="i" aria-hidden="true"><use href="assets/icons.svg#arrow"/></svg></a></p>
   </div>
@@ -159,10 +167,10 @@
       <svg class="route-svg" aria-hidden="true" focusable="false" preserveAspectRatio="none"><path class="route-base" d=""/><path class="route-draw" d=""/></svg>
       <svg class="route-plane i i-fill" aria-hidden="true" focusable="false"><use href="assets/icons.svg#plane"/></svg>
       <ol class="steps">
-        <li class="step" data-reveal style="--d:0"><span class="step-no">01</span><h3>Kennenlernen</h3><p>Im kostenlosen Erstgespräch erzählen Sie, wie Ihr Urlaub sein soll und was er kosten darf.</p></li>
-        <li class="step" data-reveal style="--d:1"><span class="step-no">02</span><h3>Vorschläge</h3><p>Sie bekommen passende Vorschläge mit klaren Preisen und entscheiden in Ruhe.</p></li>
-        <li class="step" data-reveal style="--d:2"><span class="step-no">03</span><h3>Buchung</h3><p>Flug, Hotel, Transfer und Ausflüge buchen wir abgestimmt. Die Unterlagen kommen gebündelt.</p></li>
-        <li class="step" data-reveal style="--d:3"><span class="step-no">04</span><h3>Begleitung</h3><p>Unterwegs ist Ihr Berater erreichbar. Nach der Rückkehr fragen wir nach, wie es war.</p></li>
+        <li class="step" data-reveal style="--d:0"><span class="step-no"><small>Schritt</small>01</span><h3>Kennenlernen</h3><p>Im kostenlosen Erstgespräch erzählen Sie, wie Ihr Urlaub sein soll und was er kosten darf.</p></li>
+        <li class="step" data-reveal style="--d:1"><span class="step-no"><small>Schritt</small>02</span><h3>Vorschläge</h3><p>Sie bekommen passende Vorschläge mit klaren Preisen und entscheiden in Ruhe.</p></li>
+        <li class="step" data-reveal style="--d:2"><span class="step-no"><small>Schritt</small>03</span><h3>Buchung</h3><p>Flug, Hotel, Transfer und Ausflüge buchen wir abgestimmt. Die Unterlagen kommen gebündelt.</p></li>
+        <li class="step" data-reveal style="--d:3"><span class="step-no"><small>Schritt</small>04</span><h3>Begleitung</h3><p>Unterwegs ist Ihr Berater erreichbar. Nach der Rückkehr fragen wir nach, wie es war.</p></li>
       </ol>
     </div>
     <p class="mt-12"><a class="btn" href="beratung.html">Erstgespräch vereinbaren <svg class="i i-arrow" aria-hidden="true"><use href="assets/icons.svg#arrow"/></svg></a></p>
@@ -333,9 +341,9 @@
     </div>
   </div>
 </footer>
-<script src="data/offers.js?v=6" defer></script>
-<script src="data/reviews.js?v=6" defer></script>
-<script src="assets/js/site.js?v=6" defer></script>
-<script src="assets/js/reviews.js?v=6" defer></script>
+<script src="data/offers.js?v=8" defer></script>
+<script src="data/reviews.js?v=8" defer></script>
+<script src="assets/js/site.js?v=8" defer></script>
+<script src="assets/js/reviews.js?v=8" defer></script>
 </body>
 </html>

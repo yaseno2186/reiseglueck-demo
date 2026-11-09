@@ -93,27 +93,33 @@
     });
   }
   window.RG_UI.imgFor = imgFor;
-  var INCL_ICON = { Flug: 'plane', Hotel: 'bed', Transfer: 'bus', Halbpension: 'meal' };
 
   function bookHref(id) { return 'buchen.html?item=' + encodeURIComponent(id); }
+
+  function detailRow(label, value, ic) {
+    return h('li', null, [h('span', { class: 'd-label', text: label }), h('span', { class: 'd-val', text: value }), icon(ic)]);
+  }
 
   function card(it, i) {
     var media = h('div', { class: 'card-media' }, [imgFor(it.bild, it.bildAlt)]);
     if (it.badge) media.appendChild(h('span', { class: 'badge' }, [it.badge]));
-    var bodyKids = [h('h3', { text: it.name }), h('p', { text: it.kurz })];
     var incl = it.inklusive || ['Flug', 'Hotel'];
-    if (it.gruppe === 'paket' && it.id === 'deutschland') incl = ['Hotel', 'Anreise nach Wunsch'];
-    var ul = h('ul', { class: 'incl', 'aria-label': 'Leistungen' });
-    incl.forEach(function (x) { ul.appendChild(h('li', null, [icon(INCL_ICON[x] || 'check'), x])); });
-    bodyKids.push(ul);
-    bodyKids.push(h('div', { class: 'price-row' }, [
-      h('span', { class: 'price', text: K.preisText(it) }),
-      h('span', { class: 'price-meta', text: it.einheit + ' · ' + it.dauer + (it.zusatz ? ' · ' + it.zusatz : '') })
-    ]));
-    var a = h('a', { class: 'btn btn-sm', href: bookHref(it.id), 'aria-label': 'Reise buchen: ' + it.name }, ['Reise buchen', icon('arrow', 'i-arrow')]);
-    bodyKids.push(h('div', { class: 'card-foot' }, [h('span', { class: 'mono', text: 'Beispielpreis (Demo)' }), a]));
-    var art = h('article', { class: 'card', 'data-reveal': '', style: '--d:' + (i % 4), 'data-id': it.id }, [media, h('div', { class: 'card-body' }, bodyKids)]);
-    return art;
+    if (it.id === 'deutschland') incl = ['Hotel', 'Anreise nach Wunsch'];
+    if (it.id === 'kreuzfahrt') incl = ['Kabine', 'Vollpension an Bord'];
+    var zimmer = it.id === 'kreuzfahrt' ? 'p. P. in der Doppelkabine' : 'p. P. im Doppelzimmer';
+    var details = h('ul', { class: 'details', 'aria-label': 'Details' }, [
+      detailRow('Dauer', it.dauer, 'calendar'),
+      detailRow('Leistungen', incl.join(' · '), 'suitcase'),
+      detailRow('Basis', zimmer, 'bed')
+    ]);
+    if (it.zusatz) details.appendChild(detailRow('Hinweis', it.zusatz, 'info'));
+    var price = h('div', { class: 'price-row' }, [
+      h('span', { class: 'price-meta mono', text: 'Beispielpreis (Demo)' }),
+      h('span', null, [h('span', { class: 'price', text: K.preisText(it) }), h('span', { class: 'price-unit', text: ' ' + it.einheit })])
+    ]);
+    var a = h('a', { class: 'btn btn-block', href: bookHref(it.id), 'aria-label': 'Reise buchen: ' + it.name }, ['Reise buchen', icon('arrow', 'i-arrow')]);
+    var body = h('div', { class: 'card-body' }, [h('h3', { text: it.name }), h('p', { text: it.kurz }), details, price, a]);
+    return h('article', { class: 'card', 'data-reveal': '', style: '--d:' + (i % 4), 'data-id': it.id }, [media, body]);
   }
 
   if (K) {
