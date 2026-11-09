@@ -68,6 +68,7 @@
         dark = !!stack[i].closest(DARK); break;
       }
       body.classList.toggle('header-on-dark', dark);
+      body.classList.toggle('scrolled', window.scrollY > 8);
     };
     var reqTone = function () { if (!toneTick) { toneTick = true; requestAnimationFrame(tone); } };
     tone();
