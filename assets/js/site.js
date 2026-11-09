@@ -52,11 +52,28 @@
   window.RG_LENIS = lenis;
   window.RG_UI.scrollToY = function (y) { if (lenis) lenis.scrollTo(y, { immediate: true }); else window.scrollTo({ top: y, behavior: 'auto' }); };
 
-  /* ---------- Header: scrolled state ---------- */
   var body = doc.body;
-  if (body.classList.contains('has-hero')) {
-    var onScroll = function () { body.classList.toggle('scrolled', window.scrollY > 40); };
-    onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ---------- Header tone: transparent glass header, light text over dark sections ---------- */
+  var header = doc.querySelector('.site-header');
+  if (header) {
+    var DARK = '.on-dark, .hero, .page-hero, .cta-band, .site-footer';
+    var toneTick = false;
+    var tone = function () {
+      toneTick = false;
+      var y = Math.round(header.offsetHeight / 2), x = Math.round(window.innerWidth / 2), dark = false;
+      var stack = doc.elementsFromPoint ? doc.elementsFromPoint(x, y) : [];
+      for (var i = 0; i < stack.length; i++) {
+        if (header.contains(stack[i])) continue;
+        dark = !!stack[i].closest(DARK); break;
+      }
+      body.classList.toggle('header-on-dark', dark);
+    };
+    var reqTone = function () { if (!toneTick) { toneTick = true; requestAnimationFrame(tone); } };
+    tone();
+    window.addEventListener('scroll', reqTone, { passive: true });
+    window.addEventListener('resize', reqTone);
+    window.addEventListener('load', reqTone);
   }
 
   /* ---------- Menu drawer ---------- */
