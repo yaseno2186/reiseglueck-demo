@@ -117,15 +117,18 @@
     });
   }
   window.RG_UI.imgFor = imgFor;
+  window.RG_UI.card = function (it, i) { return card(it, i); };
 
   function bookHref(id) { return 'buchen.html?item=' + encodeURIComponent(id); }
+  function detailHref(id) { return 'reise.html?id=' + encodeURIComponent(id); }
 
   function detailRow(label, value, ic) {
     return h('li', null, [h('span', { class: 'd-label', text: label }), h('span', { class: 'd-val', text: value }), icon(ic)]);
   }
 
   function card(it, i) {
-    var media = h('div', { class: 'card-media' }, [imgFor(it.bild, it.bildAlt)]);
+    var media = h('a', { class: 'card-media', href: detailHref(it.id), tabindex: '-1', 'aria-hidden': 'true' }, [imgFor(it.bild, it.bildAlt)]);
+    media.appendChild(h('span', { class: 'card-photos' }, [icon('plus'), 'Fotos & Details']));
     if (it.badge) media.appendChild(h('span', { class: 'badge' }, [it.badge]));
     var incl = it.inklusive || ['Flug', 'Hotel'];
     if (it.id === 'deutschland') incl = ['Hotel', 'Anreise nach Wunsch'];
@@ -142,7 +145,7 @@
       h('span', null, [h('span', { class: 'price', text: K.preisText(it) }), h('span', { class: 'price-unit', text: ' ' + it.einheit })])
     ]);
     var a = h('a', { class: 'btn btn-block', href: bookHref(it.id), 'aria-label': 'Reise buchen: ' + it.name }, ['Reise buchen', icon('arrow', 'i-arrow')]);
-    var body = h('div', { class: 'card-body' }, [h('h3', { text: it.name }), h('p', { text: it.kurz }), details, price, a]);
+    var body = h('div', { class: 'card-body' }, [h('h3', null, [h('a', { href: detailHref(it.id), class: 'card-title' }, [it.name])]), h('p', { text: it.kurz }), details, price, a]);
     return h('article', { class: 'card', 'data-reveal': '', style: '--d:' + (i % 4), 'data-id': it.id }, [media, body]);
   }
 
@@ -176,11 +179,27 @@
       var key = tb.getAttribute('data-price-table');
       var list = key === 'services' ? K.services : K.angebote.concat(K.pakete);
       list.forEach(function (it) {
-        var th = h('th', { scope: 'row' }, [it.name, h('small', { text: it.kurz + (it.dauer ? ' · ' + it.dauer : '') })]);
+        var th = h('th', { scope: 'row' }, [key === 'services' ? it.name : h('a', { href: detailHref(it.id), class: 'row-link' }, [it.name]), h('small', { text: it.kurz + (it.dauer ? ' · ' + it.dauer : '') })]);
         var price = h('td', { class: 'num', text: K.preisText(it) });
         var unit = h('td', { class: 'unit', text: it.einheit });
         var btn = h('a', { class: 'btn btn-sm' + (key === 'services' ? ' btn-ghost' : ''), href: bookHref(it.id), 'aria-label': 'Reise buchen: ' + it.name }, ['Reise buchen']);
         tb.appendChild(h('tr', null, [th, price, unit, h('td', null, [btn])]));
+      });
+    });
+  }
+
+  /* ---------- Gallery credits (Bildnachweise) ---------- */
+  var gcBody = doc.querySelector('[data-gallery-credits]');
+  if (gcBody && window.RG_GALERIEN) {
+    Object.keys(window.RG_GALERIEN).forEach(function (key) {
+      window.RG_GALERIEN[key].fotos.forEach(function (p) {
+        if (p.haupt) return;
+        gcBody.appendChild(h('tr', null, [
+          h('th', { scope: 'row', text: p.alt }),
+          h('td', { text: p.foto }),
+          h('td', null, [h('img', { src: 'assets/img/' + p.bild + '-800.webp', alt: '', width: '96', height: '64', loading: 'lazy' })]),
+          h('td', null, [h('a', { href: p.quelle, rel: 'noopener', text: 'Unsplash' })])
+        ]));
       });
     });
   }

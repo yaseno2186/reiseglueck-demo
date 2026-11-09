@@ -27,3 +27,41 @@ Farbquelle genutzt, Name und Grafik wurden nicht übernommen.
 Logo, Icons und Illustrationen: eigene Vektorgrafiken für dieses Demo-Projekt.
 Schriften (selbst gehostet, SIL Open Font License): Bricolage Grotesque, Figtree, DM Mono.
 Sanftes Scrollen: Lenis 1.1.20 (darkroom.engineering), MIT-Lizenz, selbst gehostet (assets/js/vendor/).
+
+Galeriefotos der Reise-Detailseiten (assets/img/g-*.webp, ebenfalls Unsplash-Lizenz):
+g-mallorca-1-*.webp               Weiß-blaues Boot im Hafen eines Inseldorfs    E. Diop                         https://unsplash.com/photos/L35klrGN57Q
+g-mallorca-2-*.webp               Boote im Hafen vor alten Häusern              Slim MARS                       https://unsplash.com/photos/wkv08Xy621I
+g-mallorca-3-*.webp               Bunte Häuser an einem Hafen voller Boote      Domenico Adornato               https://unsplash.com/photos/8G9qLiAJnDM
+g-tuerkei-familie-1-*.webp        Boote in einer türkisen Bucht, von oben       Kaan Kosemen                    https://unsplash.com/photos/RR9Hb83E_fw
+g-tuerkei-familie-2-*.webp        Blick von einem Berg auf blaue Buchten und I  Tatyana Rubleva                 https://unsplash.com/photos/RCDmPFKZWCU
+g-tuerkei-familie-3-*.webp        Felsen im klaren, blauen Meer                 İrem Türkkan                    https://unsplash.com/photos/lggAYJi1j-c
+g-budget-1-*.webp                 Blau-weiße Sonnenschirme am Strand, von oben  Ricardo Gomez Angel             https://unsplash.com/photos/hlmuzhcpCkY
+g-budget-2-*.webp                 Gelb-grüner Sonnenschirm am Strand            Celeste Shepherd                https://unsplash.com/photos/Sl-TkCIEWJI
+g-budget-3-*.webp                 Weiße Schirme und Liegen am Sandstrand        Jose Manuel Esp                 https://unsplash.com/photos/sgN8UMlPFkE
+g-komfort-1-*.webp                Offenes Fenster mit Blick aufs Wasser         Bjorn Agerbeek                  https://unsplash.com/photos/uH8GHfmgS3Y
+g-komfort-2-*.webp                Helles Zimmer mit zwei Betten und Meerblick   Sang Ho                         https://unsplash.com/photos/uXYHodDhiG4
+g-komfort-3-*.webp                Zwei Stühle und ein Tisch mit Blick aufs Mee  Johnny Ho                       https://unsplash.com/photos/J24R8RLPj1A
+g-premium-1-*.webp                Silhouette auf einem Steg im Sonnenuntergang  Norbert Kundrak                 https://unsplash.com/photos/iVcZslikJBE
+g-premium-2-*.webp                Spiegelnder Pool im Abendlicht                Simon Fitall                    https://unsplash.com/photos/WPO1rdTA-90
+g-premium-3-*.webp                Infinity-Pool mit Blick über das Wasser       Henry Becker                    https://unsplash.com/photos/5jutXEjF138
+g-lastminute-1-*.webp             Kamera, Sonnenbrille und Reisetasche          Anete Lūsiņa                    https://unsplash.com/photos/GOZxrAlNIt4
+g-lastminute-2-*.webp             Gepackter Koffer mit Kleidung und Schuhen     Arnel Hasanovic                 https://unsplash.com/photos/Nl-SXO4FAHw
+g-lastminute-3-*.webp             Person mit weißem Schirm an einem leeren Str  Rod Long                        https://unsplash.com/photos/R5Bq8coqA94
+g-familie-1-*.webp                Sandburgen mit Spielzeugschaufel              Phillip Flores                  https://unsplash.com/photos/ei-zTl9OUTY
+g-familie-2-*.webp                Sandburg am Strand                            Nik                             https://unsplash.com/photos/nvJI68XT5Zk
+g-familie-3-*.webp                Gelber Sandeimer am Wasser                    Courtney Moore                  https://unsplash.com/photos/absLd1jgXoo
+g-allinclusive-1-*.webp           Obstteller und Gläser beim Frühstück          Brooke Lark                     https://unsplash.com/photos/IDTEXXXfS44
+g-allinclusive-2-*.webp           Hotelfrühstück mit Obst und Orangensaft       Iason Raissis                   https://unsplash.com/photos/bKai3u16lTE
+g-allinclusive-3-*.webp           Holztisch mit vielen Tellern                  Antonio Araujo                  https://unsplash.com/photos/DnZiQ0hSk6M
+g-fernreise-1-*.webp              Zimmer mit offener Glastür und Blick auf tür  Shai Pal                        https://unsplash.com/photos/56WKMCORs-0
+g-fernreise-2-*.webp              Tropische Insel mit klarem, türkisem Wasser   Teddie Humaam                   https://unsplash.com/photos/fPwlA536orM
+g-fernreise-3-*.webp              Tropischer Strand mit Palmen                  Cris Tagupa                     https://unsplash.com/photos/qFWGqrpZhYU
+g-deutschland-1-*.webp            Ruhiger Bergsee mit Wald                      Manoa Angelo                    https://unsplash.com/photos/sGTM_vpN9XY
+g-deutschland-2-*.webp            Kleine Hütte auf einer Wiese vor den Alpen    Philipp                         https://unsplash.com/photos/lx-C7Ll5kYc
+g-deutschland-3-*.webp            Nebel über einem See mit bewaldeten Bergen    Daniel Wildbound                https://unsplash.com/photos/dvXE8lXbBkA
+g-staedtereise-1-*.webp           Kopfsteinpflaster mit Café-Tischen            Tony Lee                        https://unsplash.com/photos/8IKf54pc3qk
+g-staedtereise-2-*.webp           Weiße Sonnenschirme vor einer rosa Fassade    Clifford                        https://unsplash.com/photos/5ZB0w0vSgPk
+g-staedtereise-3-*.webp           Schmale Gasse mit roten Hauswänden und grüne  Viktor Solomonik                https://unsplash.com/photos/JSC94CLC6sI
+g-kreuzfahrt-1-*.webp             Boot im Hafen einer griechischen Insel        Ksenia Girilovich               https://unsplash.com/photos/oDSn9ztWBuM
+g-kreuzfahrt-2-*.webp             Weißes Schiff auf blauem Wasser, von oben     Willian Justen de Vasconcellos  https://unsplash.com/photos/g5FyZvIzUS4
+g-kreuzfahrt-3-*.webp             Weinflasche und Gläser mit Meerblick          Antonio Araujo                  https://unsplash.com/photos/R1NdTGhd9eM

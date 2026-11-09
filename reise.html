@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reise | ReiseGlück Reisebüro</title>
+<meta name="description" content="Fotos, Leistungen und Beispielpreis dieser Reise. Persönlich geplant von ReiseGlück.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E2449">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="ReiseGlück Reisebüro (Demo)">
+<meta property="og:title" content="Reise | ReiseGlück Reisebüro">
+<meta property="og:description" content="Fotos, Leistungen und Beispielpreis dieser Reise. Persönlich geplant von ReiseGlück.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css?v=13">
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<header class="site-header">
+  <div class="frame">
+    <a class="brand" href="index.html" aria-label="ReiseGlück Reisebüro, zur Startseite">
+      <img class="logo-dark" src="assets/logo/logo.svg" alt="" width="176" height="40">
+      <img class="logo-white" src="assets/logo/logo-white.svg" alt="" width="176" height="40">
+    </a>
+    <nav class="nav-main" aria-label="Hauptnavigation">
+        <a href="reisen.html" aria-current="page">Reisen</a>
+        <a href="preise.html">Preise</a>
+        <a href="bewertungen.html">Bewertungen</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-sm header-cta" href="buchen.html">Reise buchen</a>
+      <button class="menu-btn" type="button" data-menu-open aria-expanded="false" aria-controls="drawer"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#menu"/></svg><span class="menu-label">Menü</span></button>
+    </div>
+  </div>
+</header>
+<div class="drawer on-dark" id="drawer" hidden>
+  <div class="drawer-backdrop" data-menu-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menü" data-lenis-prevent>
+    <div class="drawer-top">
+      <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="158" height="36">
+      <button class="menu-btn" type="button" data-menu-close><svg class="i" aria-hidden="true"><use href="assets/icons.svg#close"/></svg><span class="menu-label">Schließen</span></button>
+    </div>
+    <nav aria-label="Alle Seiten">
+      <ol>
+          <li><a href="index.html">Start</a></li>
+          <li><a href="reisen.html" aria-current="page">Reisen</a></li>
+          <li><a href="preise.html">Leistungen & Preise</a></li>
+          <li><a href="buchen.html">Reise buchen</a></li>
+          <li><a href="bewertungen.html">Bewertungen</a></li>
+          <li><a href="beratung.html">Beratung & Anfrage</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+      </ol>
+    </nav>
+    <div class="drawer-foot">
+      <p><a class="btn btn-block" href="buchen.html">Reise buchen</a></p>
+      <p>Lieber erst reden? <a href="beratung.html">Kostenlose Beratung</a><br><a href="tel:+493000000000">030 000 000 00</a></p>
+    </div>
+  </div>
+</div>
+<main id="main">
+<section class="section ruled detail" aria-labelledby="page-title">
+  <div class="frame">
+    <p class="crumbs crumbs-light"><a href="index.html">Start</a> / <a href="reisen.html">Reisen</a> / <span id="crumb-name">Reise</span></p>
+    <div class="detail-head">
+      <h1 id="page-title">Reise wird geladen …</h1>
+      <p class="mono detail-sub" id="detail-sub"></p>
+    </div>
+
+    <div class="gallery" id="gallery" aria-label="Fotos zu dieser Reise"></div>
+
+    <div class="detail-layout">
+      <div class="detail-main">
+        <section id="ueber" aria-labelledby="t-ueber">
+          <h2 id="t-ueber">Über diese Reise</h2>
+          <div id="detail-text"></div>
+        </section>
+        <section id="leistungen" aria-labelledby="t-leistungen">
+          <h2 id="t-leistungen">Das ist enthalten</h2>
+          <ul class="checklist" id="detail-incl"></ul>
+        </section>
+        <section id="highlights" aria-labelledby="t-highlights">
+          <h2 id="t-highlights">Darauf können Sie sich freuen</h2>
+          <ul class="checklist hl" id="detail-hl"></ul>
+        </section>
+        <section id="nicht" aria-labelledby="t-nicht">
+          <h2 id="t-nicht">Nicht im Paket enthalten</h2>
+          <ul class="checklist minus" id="detail-nicht"></ul>
+          <p class="note" id="detail-hinweis"></p>
+        </section>
+        <section id="ablauf" aria-labelledby="t-ablauf">
+          <h2 id="t-ablauf">So geht es weiter</h2>
+          <ol class="mini-steps">
+            <li><span class="mono">01</span><strong>Unverbindlich anfragen</strong><span>In vier kurzen Schritten, ohne Kosten.</span></li>
+            <li><span class="mono">02</span><strong>Ihr Berater meldet sich</strong><span>Er prüft Verfügbarkeit und Preis und schickt Ihnen ein Angebot.</span></li>
+            <li><span class="mono">03</span><strong>Sie entscheiden</strong><span>Gebucht wird erst, wenn Sie das Angebot bestätigen.</span></li>
+          </ol>
+        </section>
+      </div>
+
+      <aside class="detail-aside" aria-label="Preis und Buchung">
+        <div class="price-card">
+          <p class="mono price-card-label">Beispielpreis (Demo)</p>
+          <p class="price-card-price"><span class="price" id="aside-price"></span> <span class="price-unit" id="aside-unit"></span></p>
+          <ul class="details" id="aside-details" aria-label="Details"></ul>
+          <nav class="detail-nav" aria-label="Auf dieser Seite">
+            <a href="#ueber">Über diese Reise</a>
+            <a href="#leistungen">Leistungen</a>
+            <a href="#highlights">Highlights</a>
+            <a href="#nicht">Nicht enthalten</a>
+            <a href="#ablauf">So geht es weiter</a>
+          </nav>
+          <a class="btn btn-block" id="aside-book" href="buchen.html">Reise buchen <svg class="i i-arrow" aria-hidden="true"><use href="assets/icons.svg#arrow"/></svg></a>
+          <a class="btn btn-ghost btn-block" href="beratung.html" style="margin-top:10px">Kostenlos beraten lassen</a>
+          <p class="note" style="margin:14px 0 0">Unverbindlich. Ihr persönlicher Berater prüft Verfügbarkeit und meldet sich.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section ruled tint" aria-labelledby="more-title" id="more-section">
+  <div class="frame">
+    <div class="sec-head split">
+      <div>
+        <p class="label">Weitere Reisen</p>
+        <h2 id="more-title">Das könnte Ihnen auch gefallen</h2>
+      </div>
+      <p><a class="link-arrow" href="reisen.html">Alle Reisen ansehen <svg class="i" aria-hidden="true"><use href="assets/icons.svg#arrow"/></svg></a></p>
+    </div>
+    <div class="cards" id="more-cards"></div>
+  </div>
+</section>
+
+<dialog class="lightbox" id="lightbox" aria-label="Fotogalerie">
+  <div class="lb-top">
+    <p class="mono lb-count" id="lb-count" aria-live="polite"></p>
+    <button class="lb-btn" type="button" id="lb-close" aria-label="Galerie schließen"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#close"/></svg></button>
+  </div>
+  <figure class="lb-figure">
+    <img id="lb-img" alt="">
+    <figcaption id="lb-cap"></figcaption>
+  </figure>
+  <button class="lb-btn lb-prev" type="button" id="lb-prev" aria-label="Vorheriges Foto"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#chev-l"/></svg></button>
+  <button class="lb-btn lb-next" type="button" id="lb-next" aria-label="Nächstes Foto"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#chev-r"/></svg></button>
+</dialog>
+</main>
+<footer class="site-footer on-dark">
+  <div class="frame">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="194" height="44" loading="lazy">
+        <p>Die Welt wartet auf Sie! Ihr Traumurlaub, persönlich geplant, von Anfang bis Ende.</p>
+        <ul class="contact-lines">
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#phone"/></svg><a href="tel:+493000000000">030 000 000 00</a></li>
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#mail"/></svg><a href="mailto:info@reiseglueck.example">info@reiseglueck.example</a></li>
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#pin"/></svg><span>Musterstraße 1, 10115 Berlin (Beispiel)</span></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Reisen</h2>
+        <ul>
+          <li><a href="reisen.html">Angebote und Reiseziele</a></li>
+          <li><a href="preise.html">Leistungen &amp; Preise</a></li>
+          <li><a href="buchen.html?item=lastminute">Last Minute</a></li>
+          <li><a href="buchen.html?item=familie">Familienurlaub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Service</h2>
+        <ul>
+          <li><a href="beratung.html">Kostenlose Beratung</a></li>
+          <li><a href="buchen.html">Reise buchen</a></li>
+          <li><a href="bewertungen.html">Bewertungen</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Öffnungszeiten</h2>
+        <ul class="hours">
+  <li data-day="1,2,3,4,5"><span class="day">Mo–Fr</span><span>09:00–18:00 Uhr</span></li>
+  <li data-day="6"><span class="day">Sa</span><span>09:00–13:00 Uhr</span></li>
+  <li data-day="0"><span class="day">So</span><span>geschlossen</span></li>
+</ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span data-year>2026</span> ReiseGlück Reisebüro · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a> · <a href="bildnachweise.html">Bildnachweise</a></span>
+      <span class="demo-flag"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#info"/></svg>Demo-Projekt · fiktive Marke</span>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/vendor/lenis.min.js?v=13" defer></script>
+<script src="data/offers.js?v=13" defer></script>
+<script src="data/reviews.js?v=13" defer></script>
+<script src="data/galleries.js?v=13" defer></script>
+<script src="assets/js/site.js?v=13" defer></script>
+<script src="assets/js/detail.js?v=13" defer></script>
+</body>
+</html>
