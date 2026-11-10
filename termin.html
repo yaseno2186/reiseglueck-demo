@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Termin buchen: Kostenlose Reiseberatung | ReiseGlück (Demo)</title>
+<meta name="description" content="Buchen Sie direkt einen kostenlosen Beratungstermin bei Lena oder Jonas, oder sehen Sie beide Kalender in einem. Demo-Kalender eines fiktiven Reisebüros.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E2449">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="ReiseGlück Reisebüro (Demo)">
+<meta property="og:title" content="Termin buchen | ReiseGlück (Demo)">
+<meta property="og:description" content="Kostenlosen Beratungstermin direkt im Kalender buchen. Demo eines fiktiven Reisebüros.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css?v=22">
+</head>
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<header class="site-header">
+  <div class="frame">
+    <a class="brand" href="index.html" aria-label="ReiseGlück Reisebüro, zur Startseite">
+      <img class="logo-dark" src="assets/logo/logo.svg" alt="" width="176" height="40">
+      <img class="logo-white" src="assets/logo/logo-white.svg" alt="" width="176" height="40">
+    </a>
+    <nav class="nav-main" aria-label="Hauptnavigation">
+        <a href="reisen.html">Reisen</a>
+        <a href="preise.html">Preise</a>
+        <a href="bewertungen.html">Bewertungen</a>
+        <a href="buchen.html">Buchen</a>
+    </nav>
+    <div class="header-actions">
+      <button class="menu-btn" type="button" data-menu-open aria-expanded="false" aria-controls="drawer"><span class="menu-label">Menü</span></button>
+    </div>
+  </div>
+</header>
+<div class="drawer on-dark" id="drawer" hidden>
+  <div class="drawer-backdrop" data-menu-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menü" data-lenis-prevent>
+    <div class="drawer-top">
+      <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="158" height="36">
+      <button class="menu-btn" type="button" data-menu-close><svg class="i" aria-hidden="true"><use href="assets/icons.svg#close"/></svg><span class="menu-label">Schließen</span></button>
+    </div>
+    <nav aria-label="Alle Seiten">
+      <ol>
+          <li><a href="index.html">Start</a></li>
+          <li><a href="reisen.html">Reisen</a></li>
+          <li><a href="preise.html">Leistungen & Preise</a></li>
+          <li><a href="buchen.html">Reise buchen</a></li>
+          <li><a href="bewertungen.html">Bewertungen</a></li>
+          <li><a href="beratung.html">Beratung & Anfrage</a></li>
+          <li><a href="termin.html" aria-current="page">Termin buchen</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+      </ol>
+    </nav>
+    <div class="drawer-foot">
+      <p><a class="btn btn-block" href="buchen.html">Reise buchen</a></p>
+      <p>Lieber erst reden? <a href="beratung.html">Kostenlose Beratung</a><br><a href="tel:+493000000000">030 000 000 00</a></p>
+    </div>
+  </div>
+</div>
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="frame">
+    <p class="crumbs"><a href="index.html">Start</a> / Termin buchen</p>
+    <p class="label">Kostenlose Erstberatung · 30 Minuten</p>
+    <h1 id="page-title">Ihr Termin, Ihr <span class="k">Berater</span></h1>
+    <p class="lead">Wählen Sie, mit wem Sie sprechen möchten, und buchen Sie direkt einen freien Termin. Unsicher? Dann sehen Sie beide Kalender in einem.</p>
+  </div>
+</section>
+
+<section class="section ruled" aria-labelledby="cal-title">
+  <div class="frame">
+    <div class="demo-note"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#info"/></svg><p><strong>Demo-Kalender.</strong> Berater und Termine sind erfunden. Gebuchte Termine werden nur in Ihrem Browser gespeichert, es werden keine Daten gesendet.</p></div>
+    <div class="cal" data-cal>
+      <h2 id="cal-title" class="cal-step-title"><span class="cal-no">1</span>Mit wem möchten Sie sprechen?</h2>
+      <fieldset class="cal-advisors">
+        <legend class="sr-only">Berater wählen</legend>
+        <label class="adv"><input type="radio" name="berater" value="lena"><span class="adv-card"><span class="avatar" style="--c:var(--c-lena)" aria-hidden="true">LH</span><span class="adv-text"><strong>Lena Hoffmann</strong><small>Fernreisen &amp; Kreuzfahrten</small><small class="adv-days">Mo–Do</small></span></span></label>
+        <label class="adv"><input type="radio" name="berater" value="jonas"><span class="adv-card"><span class="avatar" style="--c:var(--c-jonas)" aria-hidden="true">JW</span><span class="adv-text"><strong>Jonas Weber</strong><small>Familien, Pauschal &amp; Last Minute</small><small class="adv-days">Di–Sa</small></span></span></label>
+        <label class="adv"><input type="radio" name="berater" value="both" checked><span class="adv-card"><span class="avatar-pair" aria-hidden="true"><span class="avatar" style="--c:var(--c-lena)">LH</span><span class="avatar" style="--c:var(--c-jonas)">JW</span></span><span class="adv-text"><strong>Egal, wer Zeit hat</strong><small>Beide Kalender in einem</small><small class="adv-days">Mo–Sa</small></span></span></label>
+      </fieldset>
+
+      <h2 class="cal-step-title"><span class="cal-no">2</span>Tag und Uhrzeit wählen</h2>
+      <div class="cal-body">
+        <div class="cal-month">
+          <div class="cal-head">
+            <button class="icon-btn" type="button" data-cal-prev aria-label="Vorheriger Monat"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#chev-l"/></svg></button>
+            <p class="cal-month-name" data-cal-month aria-live="polite"></p>
+            <button class="icon-btn" type="button" data-cal-next aria-label="Nächster Monat"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#chev-r"/></svg></button>
+          </div>
+          <div class="cal-week" aria-hidden="true"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div>
+          <div class="cal-days" data-cal-days></div>
+          <p class="cal-legend" data-cal-legend><span><i style="--c:var(--c-lena)"></i>Lena</span><span><i style="--c:var(--c-jonas)"></i>Jonas</span></p>
+        </div>
+        <div class="cal-slots" data-cal-slots-wrap>
+          <p class="cal-day-name" data-cal-dayname></p>
+          <div data-cal-slots></div>
+        </div>
+      </div>
+
+      <div class="cal-form-wrap" data-cal-form-wrap hidden>
+        <h2 class="cal-step-title"><span class="cal-no">3</span>Ihre Angaben</h2>
+        <p class="cal-picked" data-cal-picked></p>
+        <form class="form-card" data-cal-form novalidate aria-label="Termin bestätigen">
+          <div class="err-summary" tabindex="-1" hidden role="alert"><h3>Bitte prüfen Sie Ihre Angaben:</h3><ul></ul></div>
+          <div class="row-2">
+            <div class="field">
+              <label for="t-name">Vor- und Nachname</label>
+              <input class="input" id="t-name" type="text" autocomplete="name" maxlength="80" aria-describedby="t-name-err">
+              <p class="err" id="t-name-err"></p>
+            </div>
+            <div class="field">
+              <label for="t-email">E-Mail</label>
+              <input class="input" id="t-email" type="email" autocomplete="email" maxlength="120" aria-describedby="t-email-err">
+              <p class="err" id="t-email-err"></p>
+            </div>
+          </div>
+          <fieldset class="field">
+            <legend class="flabel">Wie möchten Sie sprechen?</legend>
+            <div class="radios-inline">
+              <label class="pill-radio"><input type="radio" name="t-art" value="Telefon" checked><span>Telefon</span></label>
+              <label class="pill-radio"><input type="radio" name="t-art" value="Video"><span>Video</span></label>
+              <label class="pill-radio"><input type="radio" name="t-art" value="Im Reisebüro"><span>Im Reisebüro</span></label>
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="t-note">Worum geht es? <span class="opt">(optional)</span></label>
+            <textarea class="input" id="t-note" rows="3" maxlength="600" placeholder="z. B. Herbstferien mit zwei Kindern, Strand und Pool"></textarea>
+          </div>
+          <div class="field">
+            <label class="check" for="t-consent"><input type="checkbox" id="t-consent" aria-describedby="t-consent-err"><span>Ich bin einverstanden, dass ReiseGlück mich zu diesem Termin kontaktiert. Mehr in der <a href="datenschutz.html">Datenschutzerklärung</a>.</span></label>
+            <p class="err" id="t-consent-err"></p>
+          </div>
+          <button class="btn" type="submit">Termin verbindlich buchen (Demo) <svg class="i i-arrow" aria-hidden="true"><use href="assets/icons.svg#arrow"/></svg></button>
+        </form>
+      </div>
+
+      <div class="success-box cal-done" data-cal-done hidden role="status">
+        <h2 tabindex="-1" data-cal-done-title>Ihr Termin ist gebucht.</h2>
+        <p data-cal-done-text></p>
+        <p><strong>Demo: Es wurde nichts gesendet.</strong> Der Termin ist nur in diesem Browser gespeichert.</p>
+        <div class="cal-done-actions">
+          <button class="btn" type="button" data-cal-ics><svg class="i" aria-hidden="true"><use href="assets/icons.svg#calendar"/></svg>In meinen Kalender (.ics)</button>
+          <button class="btn btn-ghost" type="button" data-cal-cancel>Termin stornieren</button>
+          <button class="btn btn-ghost" type="button" data-cal-new>Weiteren Termin buchen</button>
+        </div>
+      </div>
+      <p class="sr-only" aria-live="polite" data-cal-status></p>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer on-dark">
+  <div class="frame">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="assets/logo/logo-white.svg" alt="ReiseGlück Reisebüro" width="194" height="44" loading="lazy">
+        <p>Die Welt wartet auf Sie! Ihr Traumurlaub, persönlich geplant, von Anfang bis Ende.</p>
+        <ul class="contact-lines">
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#phone"/></svg><a href="tel:+493000000000">030 000 000 00</a></li>
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#mail"/></svg><a href="mailto:info@reiseglueck.example">info@reiseglueck.example</a></li>
+          <li><svg class="i" aria-hidden="true"><use href="assets/icons.svg#pin"/></svg><span>Musterstraße 1, 10115 Berlin (Beispiel)</span></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Reisen</h2>
+        <ul>
+          <li><a href="reisen.html">Angebote und Reiseziele</a></li>
+          <li><a href="preise.html">Leistungen &amp; Preise</a></li>
+          <li><a href="buchen.html?item=lastminute">Last Minute</a></li>
+          <li><a href="buchen.html?item=familie">Familienurlaub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Service</h2>
+        <ul>
+          <li><a href="beratung.html">Kostenlose Beratung</a></li>
+          <li><a href="buchen.html">Reise buchen</a></li>
+          <li><a href="bewertungen.html">Bewertungen</a></li>
+          <li><a href="ueber-uns.html">Über uns</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Öffnungszeiten</h2>
+        <ul class="hours">
+  <li data-day="1,2,3,4,5"><span class="day">Mo–Fr</span><span>09:00–18:00 Uhr</span></li>
+  <li data-day="6"><span class="day">Sa</span><span>09:00–13:00 Uhr</span></li>
+  <li data-day="0"><span class="day">So</span><span>geschlossen</span></li>
+</ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span data-year>2026</span> ReiseGlück Reisebüro · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a> · <a href="bildnachweise.html">Bildnachweise</a></span>
+      <span class="demo-flag"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#info"/></svg>Demo-Projekt · fiktive Marke</span>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/vendor/lenis.min.js?v=22" defer></script>
+<script src="data/offers.js?v=22" defer></script>
+<script src="data/reviews.js?v=22" defer></script>
+<script src="assets/js/site.js?v=22" defer></script>
+<script src="assets/js/termin.js?v=22" defer></script>
+<script src="assets/js/motion.js?v=22" defer></script>
+</body>
+</html>
