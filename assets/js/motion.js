@@ -107,6 +107,7 @@
       w.style.setProperty('--i', i);
     });
     requestAnimationFrame(function () { requestAnimationFrame(function () { h1.classList.add('rise-in'); }); });
+    setTimeout(function () { h1.classList.add('rise-done'); }, words.length * 75 + 1600);
   });
 
   /* ---------- Hero: Parallax, Inhalt hebt sich und wird unscharf ---------- */

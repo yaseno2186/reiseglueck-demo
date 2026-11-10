@@ -721,7 +721,8 @@ legend { padding: 0; margin-bottom: var(--s-2); }
 .motion .scrub-h .w { display: inline-block; will-change: opacity, transform, filter; }
 .motion .scrub-p .wt { transition: opacity .12s linear; }
 /* headline words rise out of a line mask on load */
-.motion .rise .rw-mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; }
+.motion .rise .rw-mask { display: inline-block; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; clip-path: inset(-1em -1em 0 -1em); }
+.motion .rise.rise-done .rw-mask { clip-path: none; }
 .motion .rise .rw { display: inline-block; transform: translate3d(0, 108%, 0) rotate(4deg); transform-origin: 0 100%; opacity: 0; }
 .motion .rise.rise-in .rw { transform: none; opacity: 1; transition: transform 1.25s var(--ease-expo), opacity .6s ease-out; transition-delay: calc(var(--i, 0) * 75ms + 150ms); }
 .motion .hero-media, .motion .hero-content { will-change: transform; }
