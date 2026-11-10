@@ -112,7 +112,6 @@ ul, ol { padding-left: 1.2em; }
 
 /* mono label */
 .label { display: inline-flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-weight: 500; font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--sky-600); margin-bottom: var(--s-4); }
-.label::before { content: ""; width: 8px; height: 8px; border: 1.5px solid currentColor; flex: none; }
 .on-dark .label, .hero .label { color: var(--sky-200); }
 .mono { font-family: var(--f-mono); font-size: .8125rem; letter-spacing: .06em; }
 .k { color: var(--orange-700); }
