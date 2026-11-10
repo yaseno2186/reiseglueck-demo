@@ -96,8 +96,24 @@
     '  float a = 1. - smoothstep(-u_soft, u_soft*.7, d);',  // soft, liquid edge
     '  float body = mix(.62, .97, fres);',
     '  float inRim = exp(d/(u_fs*.012))*.75;',
-    '  float A = clamp(body + spec + rim*.6 + inRim, 0., 1.)*a;',
-    '  vec3 c = (col*body + vec3(1.)*spec + pale*(rim + inRim))*a;',
+    // white foam wave sweeping across the whole word (every ~4.8 s, first right after the splash)
+    '  float foam = 0.;',
+    '  if (u_wob > 0.) {',
+    '    float cyc = mod(u_time - 2.3, 5.2), prog = cyc/2.6;',
+    '    if (u_time > 2.3 && prog < 1.) {',
+    '      float bw = u_fs*1.2;',
+    '      float xb = mix(u_t0.x - bw, u_t0.x + u_ts.x + bw*.4, smoothstep(0., 1., prog));',
+    '      vec2 q = p/u_fs;',
+    '      float sx = p.x - xb + (sin(q.y*5.2 + u_time*2.1)*.09 + sin(q.y*11.5 - u_time*3.3)*.035)*u_fs;',
+    '      float crest = exp(-sx*sx/pow(u_fs*.09, 2.));',
+    '      float trail = sx < 0. ? exp(sx/(u_fs*.7)) : 0.;',
+    '      float speck = .55 + .45*sin(q.x*38. + 3.*sin(q.y*29. + u_time))*sin(q.y*41. - q.x*7.);',
+    '      foam = clamp(crest + trail*.7*speck, 0., 1.)*smoothstep(1., .82, prog);',
+    '    }',
+    '  }',
+    '  col = mix(col, vec3(1.), foam*.9);',
+    '  float A = clamp(body + spec + rim*.6 + inRim + foam*.6, 0., 1.)*a;',
+    '  vec3 c = (col*max(body, foam*.9) + vec3(1.)*spec + pale*(rim + inRim))*a;',
     '  gl_FragColor = vec4(c, A) + shadow*(1. - A);',
     '}'
   ].join('\n');
@@ -185,7 +201,7 @@
     geo.tx = geo.wx - pad; geo.ty = geo.wy - pad; geo.tw = tw / texScale; geo.th = th / texScale;
     var c2 = document.createElement('canvas'); c2.width = tw; c2.height = th;
     var ctx = c2.getContext('2d');
-    var fsPx = geo.fs * texScale, lsPx = (geo.ls + geo.fs * .03) * texScale; // a little air so the rounded letters don't melt together
+    var fsPx = geo.fs * texScale, lsPx = (geo.ls + geo.fs * .04) * texScale; // a little air so the rounded letters don't melt together
     ctx.font = geo.weight + ' ' + fsPx + 'px ' + geo.family;
     ctx.fillStyle = '#000'; ctx.textBaseline = 'alphabetic';
     var m = ctx.measureText(TEXT), total = m.width + lsPx * (TEXT.length - 1);
@@ -194,7 +210,7 @@
     var x0 = (tw - total) / 2, y0 = pad * texScale + (lineH - (asc + desc)) / 2 + asc;
     for (var i = 0; i < TEXT.length; i++) ctx.fillText(TEXT[i], x0 + ctx.measureText(TEXT.slice(0, i)).width + lsPx * i, y0);
     var img = ctx.getImageData(0, 0, tw, th).data, n = tw * th;
-    var soft = new Float32Array(n), rr = Math.max(1, Math.round(fsPx * .026));
+    var soft = new Float32Array(n), rr = Math.max(1, Math.round(fsPx * .032));
     for (var k = 0; k < n; k++) soft[k] = img[k * 4 + 3] / 255;
     soft = boxBlur(soft, tw, th, rr, 2); // melts the corners into rounded, liquid shapes
     var outer = new Float64Array(n), inner = new Float64Array(n);
@@ -249,7 +265,7 @@
     gl.uniform1f(U.u_float, isGL2 ? 1 : 0); gl.uniform1f(U.u_dsc, s / texScale);
     gl.uniform1f(U.u_B, geo.fs * .08 * s);
     gl.uniform1f(U.u_wob, reduce ? 0 : geo.fs * .011 * s);
-    gl.uniform1f(U.u_soft, Math.max(1, geo.fs * .007 * s));
+    gl.uniform1f(U.u_soft, Math.max(1.5, geo.fs * .02 * s)); // soft, slightly blurred water edge
     gl.uniform1f(U.u_k, geo.fs * .09 * s);
   }
 
