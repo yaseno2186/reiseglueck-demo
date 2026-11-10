@@ -217,10 +217,13 @@ body.lock { overflow: hidden; }
 .wave-title { position: relative; margin: 0 0 clamp(16px, 2vw, 28px); }
 .hero h1 { font-family: var(--f-display); font-variation-settings: "opsz" 96; font-weight: 700; font-size: clamp(3.6rem, 14vw, 13rem); line-height: .9; letter-spacing: -.02em; color: var(--white); margin: 0; max-width: none; text-shadow: 0 2px 40px rgba(14, 36, 73, .25); }
 .wave-title.has-water h1, .wave-title.has-water h1 * { color: transparent !important; text-shadow: none; }
-.water-canvas { position: absolute; pointer-events: none; display: block; }
-@media (prefers-reduced-motion: no-preference) {
-  .js .water-canvas { animation: fade-in .6s ease-out both; }
+.water-canvas { position: absolute; pointer-events: none; display: block; z-index: 1; }
+/* while the water intro loads, keep the plain word hidden; it appears if WebGL is missing or fails */
+@media (scripting: enabled) {
+  .wave-title:not(.has-water) h1 { animation: water-fallback .8s var(--ease-expo) 2.5s both; }
+  .wave-title.no-water h1 { animation: water-fallback .9s var(--ease-expo) both; }
 }
+@keyframes water-fallback { from { opacity: 0; transform: translateY(20px); filter: blur(8px); } }
 .hero-lead { font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; color: var(--white); max-width: 34ch; margin: 0 0 clamp(20px, 2.4vw, 32px); font-weight: 500; text-shadow: 0 1px 16px rgba(14, 36, 73, .35); }
 .hero-ctas { display: flex; flex-wrap: wrap; gap: var(--s-3); }
 .hero .hero-ctas { flex-direction: column; align-items: center; gap: var(--s-4); }

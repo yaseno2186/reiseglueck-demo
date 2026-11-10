@@ -1,196 +1,340 @@
-/* ReiseGlück (Demo) – "Fernweh" aus Wasser (WebGL)
-   Die Buchstaben werden als Wasserkörper gerendert: wellige, sich bewegende Kanten, gewölbte
-   glänzende Oberfläche mit Lichtreflexen und wandernde Lichtnetze (Kaustiken) wie am Poolboden.
-   Das echte <h1> bleibt im DOM (Suchmaschinen, Screenreader) und wird nur optisch ersetzt.
-   Ohne WebGL bleibt die normale weiße Überschrift stehen; bei "Bewegung reduzieren" ein stilles Bild. */
+/* ReiseGlück (Demo) – "Fernweh" aus Wasser (WebGL, einmalige Intro-Animation)
+   Ablauf: Ein halbtransparenter 3D-Wassertropfen fällt von oben, trifft auf, fließt in die Form
+   des Wortes und spritzt dabei kleine Tropfen heraus. Danach steht das Wort still (kein Dauer-Loop).
+   Die Buchstaben kommen aus einem Signed Distance Field der echten Schrift (TinySDF-Verfahren),
+   gerendert in voller Gerätepixeldichte – scharf in jeder Größe.
+   Das echte <h1> bleibt im DOM (Suchmaschinen, Screenreader). Ohne WebGL erscheint es normal weiß;
+   bei "Bewegung reduzieren" wird direkt das fertige Wort gezeigt. */
 (function () {
   'use strict';
   var wrap = document.querySelector('[data-water-title]');
   if (!wrap) return;
   var h1 = wrap.querySelector('h1');
-  // read the word now: motion.js later splits the h1 into a screen-reader copy + animated word spans
+  var hero = wrap.closest('.hero') || wrap.parentNode;
+  // read the word now: motion.js later splits the h1 into a screen-reader copy + animated spans
   var TEXT = h1.textContent.replace(/\s+/g, ' ').trim();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function fail() { wrap.classList.add('no-water'); }
 
   var canvas = document.createElement('canvas');
   canvas.className = 'water-canvas';
   canvas.setAttribute('aria-hidden', 'true');
-  var gl = canvas.getContext('webgl', { premultipliedAlpha: true, alpha: true, antialias: false }) ||
-           canvas.getContext('experimental-webgl', { premultipliedAlpha: true, alpha: true });
-  if (!gl) return; // fallback: plain white headline stays visible
+  var opts = { premultipliedAlpha: true, alpha: true, antialias: false };
+  // WebGL2 gives filterable half-float textures -> smooth, band-free curvature; WebGL1 is the fallback
+  var gl = canvas.getContext('webgl2', opts), isGL2 = !!gl;
+  if (!gl) gl = canvas.getContext('webgl', opts);
+  if (!gl) { fail(); return; }
 
+  var MAXD = 10; // splash droplets
   var VS = 'attribute vec2 p; varying vec2 v; void main(){ v = vec2(p.x*.5+.5, .5-p.y*.5); gl_Position = vec4(p,0.,1.); }';
   var FS = [
-    'precision mediump float;',
-    'uniform sampler2D u_tex; uniform vec2 u_res; uniform float u_t; uniform float u_fs; uniform float u_in;',
+    '#ifdef GL_FRAGMENT_PRECISION_HIGH', 'precision highp float;', '#else', 'precision mediump float;', '#endif',
+    'uniform sampler2D u_tex;',
+    'uniform vec2 u_res, u_t0, u_ts;',
+    'uniform float u_fs, u_R, u_k, u_shadow, u_float, u_dsc, u_B;',
+    'uniform vec3 u_rev, u_drop, u_tail;',
+    'uniform vec2 u_dropS;',
+    'uniform vec3 u_dr[' + MAXD + '];',
     'varying vec2 v;',
-    // classic tileable water caustic (thin bright light network)
-    'float caustic(vec2 uv, float t){',
-    '  vec2 p = mod(uv*6.28318, 6.28318) - 250.0; vec2 i = p; float c = 1.0; float inten = .005;',
-    '  for (int n = 0; n < 4; n++) { float tt = t*(1.0-(3.5/float(n+1)));',
-    '    i = p + vec2(cos(tt-i.x)+sin(tt+i.y), sin(tt-i.y)+cos(tt+i.x));',
-    '    c += 1.0/length(vec2(p.x/(sin(i.x+tt)/inten), p.y/(cos(i.y+tt)/inten))); }',
-    '  c /= 4.0; c = 1.17 - pow(c, 1.4); return clamp(pow(abs(c), 8.0), 0.0, 1.0);',
+    'float smin(float a, float b, float k){ float h = clamp(.5+.5*(b-a)/k, 0., 1.); return mix(b, a, h) - k*h*(1.-h); }',
+    'vec4 texS(vec2 p){ return texture2D(u_tex, (p - u_t0)/u_ts); }',
+    // R: signed distance (texture px as float, or 8-bit encoded), G: smoothed height of the liquid body
+    'float textD(vec2 p){',
+    '  vec4 s = texS(p); float d = u_float > .5 ? s.r*u_dsc : (s.r - .5)*2.*u_R;',
+    '  vec2 o = max(max(u_t0 - p, p - (u_t0 + u_ts)), 0.);',
+    '  return d + length(o);',
+    '}',
+    'float scene(vec2 p){',
+    '  float d = 1e5;',
+    '  if (u_rev.z > 0.) { float t = textD(p); d = u_rev.z > 1e5 ? t : -smin(-t, -(length(p - u_rev.xy) - u_rev.z), u_k); }',
+    '  if (u_drop.z > 0.) {',
+    '    vec2 q = (p - u_drop.xy)/u_dropS; float dd = (length(q) - u_drop.z)*min(u_dropS.x, u_dropS.y);',
+    '    if (u_tail.z > 0.) dd = smin(dd, length(p - u_tail.xy) - u_tail.z, u_drop.z*.9);',
+    '    d = smin(d, dd, u_k);',
+    '  }',
+    '  for (int i = 0; i < ' + MAXD + '; i++) { if (u_dr[i].z > 0.) d = smin(d, length(p - u_dr[i].xy) - u_dr[i].z, u_k*.7); }',
+    '  return d;',
     '}',
     'void main(){',
-    '  vec2 px = v*u_res; vec2 q = px/u_fs;',
-    // rippling edges like text seen through moving water (stronger while the word "settles" on load)
-    '  float amp = u_fs*(0.016 + 0.10*(1.0-u_in));',
-    '  vec2 w = vec2(sin(q.y*5.0 + u_t*1.7) + .6*sin(q.y*11.0 - q.x*3.0 + u_t*2.3),',
-    '                cos(q.x*4.0 + u_t*1.3) + .6*sin(q.x*9.0 + q.y*4.0 - u_t*1.9))*amp;',
-    '  vec2 uv = (px + w)/u_res;',
-    '  vec4 s = texture2D(u_tex, uv);',
-    '  float m = s.r; float h = s.g;',
-    '  float a = smoothstep(.32, .68, m);',
-    // soft drop shadow so the water stays readable on the bright beach
-    '  float sh = texture2D(u_tex, uv - vec2(0.0, u_fs*.06)/u_res).g;',
-    '  vec4 shadow = vec4(vec3(.01,.08,.16)*sh*.38, sh*.38);',
-    '  if (a < .003) { gl_FragColor = shadow*u_in; return; }',
-    // surface normal from the blurred height channel -> rounded, liquid body
-    '  vec2 ex = vec2(1.5/u_res.x, 0.0); vec2 ey = vec2(0.0, 1.5/u_res.y);',
-    '  float hx = texture2D(u_tex, uv+ex).g - texture2D(u_tex, uv-ex).g;',
-    '  float hy = texture2D(u_tex, uv+ey).g - texture2D(u_tex, uv-ey).g;',
-    '  vec3 n = normalize(vec3(-hx*7.0, -hy*7.0, 1.0));',
-    '  vec3 L = normalize(vec3(-.45, -.65, .62));',
-    '  float diff = clamp(dot(n, L), 0.0, 1.0);',
-    '  float spec = pow(max(dot(n, normalize(L + vec3(0.,0.,1.))), 0.0), 70.0);',
-    '  float spec2 = pow(max(dot(n, normalize(vec3(.5,.55,.7) + vec3(0.,0.,1.))), 0.0), 40.0);',
-    // caustics, refracted by the surface normal, two layers drifting at different speeds
-    '  vec2 cu = q*.42 + n.xy*.18;',
-    '  float c = caustic(cu, u_t*.55)*.9 + caustic(cu*1.6 + 3.7, u_t*.4)*.55;',
-    '  vec3 deep = vec3(.0,.20,.40); vec3 shallow = vec3(.10,.62,.86);',
-    '  vec3 col = mix(deep, shallow, clamp(smoothstep(.15,.95,h)*.65 + diff*.45, 0.0, 1.0));',
-    '  col += vec3(.78,.97,1.0)*c*1.05;',
-    '  float edge = smoothstep(.40,.55,m)*(1.0 - smoothstep(.45,.80,h));',
-    '  col += vec3(.75,.95,1.0)*edge*.55;',
-    '  col += vec3(1.0)*spec*1.1 + vec3(.85,.97,1.0)*spec2*.35;',
-    '  float A = a*clamp(.80 + .2*(c + spec), 0.0, 1.0)*u_in;',
-    '  gl_FragColor = vec4(col*A, A) + shadow*u_in*(1.0 - A);',
+    '  vec2 p = v*u_res;',
+    '  float d = scene(p);',
+    '  float ds = scene(p - vec2(0., u_fs*.05));',
+    '  float shA = u_shadow*.42*exp(-max(ds, 0.)/(u_fs*.05));',
+    '  vec4 shadow = vec4(vec3(.0,.05,.1)*shA, shA);',
+    '  if (d > 1.) { gl_FragColor = shadow; return; }',
+    '  vec2 g = vec2(scene(p + vec2(1.5,0.)) - scene(p - vec2(1.5,0.)), scene(p + vec2(0.,1.5)) - scene(p - vec2(0.,1.5)));',
+    '  g = dot(g, g) > 1e-8 ? normalize(g) : vec2(0.);',
+    '  float u = clamp(1. + d/u_B, 0., .985);',
+    '  vec3 n = normalize(vec3(g*u/sqrt(1. - u*u), 1.));',
+    // inside the finished letters use the smoothed height map: rounded liquid, no corner creases
+    '  float dt = textD(p);',
+    '  float w = 1. - smoothstep(.5, u_B*.5, abs(dt - d));',
+    '  if (w > 0.) {',
+    '    vec2 ex = vec2(2.5, 0.);',
+    '    vec2 gh = vec2(texS(p + ex).g - texS(p - ex).g, texS(p + ex.yx).g - texS(p - ex.yx).g)/5.;',
+    '    vec3 nh = normalize(vec3(-gh*u_B*2.4, 1.));',
+    '    n = normalize(mix(n, nh, w));',
+    '  }',
+    '  vec3 V = vec3(0.,0.,1.);',
+    '  vec3 L = normalize(vec3(-.42, -.72, .56));',
+    '  vec3 L2 = normalize(vec3(.62, .55, .55));',
+    '  float fres = pow(1. - n.z, 2.);',
+    '  float nh = max(dot(n, normalize(L + V)), 0.);',
+    '  float spec = pow(nh, 160.)*1.6 + pow(nh, 22.)*.22;',
+    '  float rim = pow(max(dot(n, normalize(L2 + V)), 0.), 36.)*.45;',
+    '  float lam = clamp(dot(n, L)*.5 + .5, 0., 1.);',
+    '  vec3 deep = vec3(.0,.30,.52), mid = vec3(.30,.80,.95), pale = vec3(.86,.98,1.);',
+    '  vec3 col = mix(deep, mid, lam);',
+    '  col = mix(col, pale, fres*.5);',
+    '  float a = clamp(.5 - d, 0., 1.);',
+    '  float body = mix(.62, .97, fres);',
+    '  float inRim = exp(d/(u_fs*.012))*.75;',
+    '  float A = clamp(body + spec + rim*.6 + inRim, 0., 1.)*a;',
+    '  vec3 c = (col*body + vec3(1.)*spec + pale*(rim + inRim))*a;',
+    '  gl_FragColor = vec4(c, A) + shadow*(1. - A);',
     '}'
   ].join('\n');
 
-  function sh(type, src) {
+  function compile(type, src) {
     var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { throw new Error(gl.getShaderInfoLog(s)); }
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
     return s;
   }
   var prog;
   try {
     prog = gl.createProgram();
-    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
     gl.linkProgram(prog);
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
-  } catch (e) { return; }
+  } catch (e) { fail(); return; }
   gl.useProgram(prog);
   var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-  var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  var U = {}; ['u_tex', 'u_res', 'u_t', 'u_fs', 'u_in'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+  var aLoc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(aLoc); gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
+  var U = {};
+  ['u_tex', 'u_res', 'u_t0', 'u_ts', 'u_fs', 'u_R', 'u_float', 'u_dsc', 'u_B', 'u_k', 'u_shadow', 'u_rev', 'u_drop', 'u_tail', 'u_dropS', 'u_dr']
+    .forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
   var tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
-  [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(function (k) { gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE); });
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.uniform1i(U.u_tex, 0);
   gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
-  /* separable box blur (3 passes ≈ gaussian) for the height channel */
-  function blur(src, w, hgt, r) {
-    var a = src, b = new Float32Array(src.length);
-    for (var pass = 0; pass < 3; pass++) {
-      for (var y = 0; y < hgt; y++) { // horizontal
-        var row = y * w, acc = 0, x;
-        for (x = -r; x <= r; x++) acc += a[row + Math.min(w - 1, Math.max(0, x))];
-        for (x = 0; x < w; x++) {
-          b[row + x] = acc / (2 * r + 1);
-          acc += a[row + Math.min(w - 1, x + r + 1)] - a[row + Math.max(0, x - r)];
-        }
+  /* ---------- signed distance field of the word (TinySDF algorithm, subpixel accurate) ---------- */
+  var INF = 1e20;
+  function edt1d(grid, offset, stride, length, f, v, z) {
+    var q, k, s, r;
+    v[0] = 0; z[0] = -INF; z[1] = INF; f[0] = grid[offset];
+    for (q = 1, k = 0, s = 0; q < length; q++) {
+      f[q] = grid[offset + q * stride];
+      var q2 = q * q;
+      do { r = v[k]; s = (f[q] - f[r] + q2 - r * r) / (q - r) / 2; } while (s <= z[k] && --k > -1);
+      k++; v[k] = q; z[k] = s; z[k + 1] = INF;
+    }
+    for (q = 0, k = 0; q < length; q++) {
+      while (z[k + 1] < q) k++;
+      r = v[k]; grid[offset + q * stride] = f[r] + (q - r) * (q - r);
+    }
+  }
+  function edt(data, w, h) {
+    var n = Math.max(w, h), f = new Float64Array(n), v = new Uint16Array(n), z = new Float64Array(n + 1), x, y;
+    for (x = 0; x < w; x++) edt1d(data, x, w, h, f, v, z);
+    for (y = 0; y < h; y++) edt1d(data, y * w, 1, w, f, v, z);
+  }
+
+  var geo = null, texScale = 1, R = 1;
+  function boxBlur(src, w, h, r, passes) {
+    var a = src, b = new Float32Array(src.length), x, y, acc, i0;
+    for (var pass = 0; pass < passes; pass++) {
+      for (y = 0; y < h; y++) {
+        i0 = y * w; acc = 0;
+        for (x = -r; x <= r; x++) acc += a[i0 + Math.min(w - 1, Math.max(0, x))];
+        for (x = 0; x < w; x++) { b[i0 + x] = acc / (2 * r + 1); acc += a[i0 + Math.min(w - 1, x + r + 1)] - a[i0 + Math.max(0, x - r)]; }
       }
-      for (var xx = 0; xx < w; xx++) { // vertical
-        var acc2 = 0, yy;
-        for (yy = -r; yy <= r; yy++) acc2 += b[Math.min(hgt - 1, Math.max(0, yy)) * w + xx];
-        for (yy = 0; yy < hgt; yy++) {
-          a[yy * w + xx] = acc2 / (2 * r + 1);
-          acc2 += b[Math.min(hgt - 1, yy + r + 1) * w + xx] - b[Math.max(0, yy - r) * w + xx];
-        }
+      for (x = 0; x < w; x++) {
+        acc = 0;
+        for (y = -r; y <= r; y++) acc += b[Math.min(h - 1, Math.max(0, y)) * w + x];
+        for (y = 0; y < h; y++) { a[y * w + x] = acc / (2 * r + 1); acc += b[Math.min(h - 1, y + r + 1) * w + x] - b[Math.max(0, y - r) * w + x]; }
       }
     }
     return a;
   }
 
-  var fsPx = 0, W = 0, H = 0, ready = false;
-  function build() {
+  function layout() {
+    // position relative to the hero, ignoring transforms (parallax), so the canvas stays glued to the word
+    var x = 0, y = 0, el = wrap;
+    while (el && el !== hero) { x += el.offsetLeft; y += el.offsetTop; el = el.offsetParent; }
     var cs = getComputedStyle(h1);
-    var fs = parseFloat(cs.fontSize), ls = parseFloat(cs.letterSpacing) || 0;
-    var box = h1.getBoundingClientRect();
-    var pad = Math.round(fs * 0.22);
-    var dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-    var cssW = Math.ceil(box.width + pad * 2), cssH = Math.ceil(box.height + pad * 2);
-    if (cssW * cssH * dpr * dpr > 2.4e6) dpr = Math.sqrt(2.4e6 / (cssW * cssH));
-    W = Math.max(2, Math.round(cssW * dpr)); H = Math.max(2, Math.round(cssH * dpr));
-    canvas.width = W; canvas.height = H;
-    canvas.style.width = cssW + 'px'; canvas.style.height = cssH + 'px';
-    canvas.style.left = -pad + 'px'; canvas.style.top = -pad + 'px';
-    fsPx = fs * dpr;
-
-    // draw the word (with the page font, kerning kept, letter-spacing added per glyph)
-    var c2 = document.createElement('canvas'); c2.width = W; c2.height = H;
-    var ctx = c2.getContext('2d');
-    var text = TEXT;
-    ctx.font = cs.fontWeight + ' ' + fsPx + 'px ' + cs.fontFamily;
-    ctx.fillStyle = '#fff'; ctx.textBaseline = 'alphabetic';
-    var lsd = ls * dpr, full = ctx.measureText(text), total = full.width + lsd * (text.length - 1);
-    var asc = full.actualBoundingBoxAscent || fsPx * .72, desc = full.actualBoundingBoxDescent || 0;
-    var x0 = (W - total) / 2, y0 = H / 2 + (asc - desc) / 2;
-    for (var i = 0; i < text.length; i++) ctx.fillText(text[i], x0 + ctx.measureText(text.slice(0, i)).width + lsd * i, y0);
-
-    var img = ctx.getImageData(0, 0, W, H), d = img.data, n = W * H;
-    var mask = new Float32Array(n);
-    for (var k = 0; k < n; k++) mask[k] = d[k * 4 + 3] / 255;
-    var height = blur(mask.slice(), W, H, Math.max(2, Math.round(fsPx * 0.055)));
-    var mx = 0; for (k = 0; k < n; k++) if (height[k] > mx) mx = height[k];
-    mx = mx || 1;
-    for (k = 0; k < n; k++) { d[k * 4] = mask[k] * 255; d[k * 4 + 1] = Math.min(1, height[k] / mx) * 255; d[k * 4 + 2] = 0; d[k * 4 + 3] = 255; }
-    gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-    gl.viewport(0, 0, W, H);
-    gl.uniform2f(U.u_res, W, H); gl.uniform1f(U.u_fs, fsPx);
-    ready = true;
+    return { wx: x, wy: y, ww: wrap.offsetWidth, wh: wrap.offsetHeight, hw: hero.clientWidth, hh: hero.clientHeight,
+      fs: parseFloat(cs.fontSize), ls: parseFloat(cs.letterSpacing) || 0, lh: parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * .9,
+      weight: cs.fontWeight, family: cs.fontFamily };
   }
 
-  var t0 = performance.now(), introStart = 0, running = false, visible = true, raf = 0;
-  function draw(now) {
-    if (!ready) return;
-    var t = reduce ? 2.0 : (now - t0) / 1000;
-    var k = reduce ? 1 : Math.min(1, Math.max(0, (now - introStart) / 1800));
-    var intro = 1 - Math.pow(1 - k, 3);
-    gl.uniform1f(U.u_t, t); gl.uniform1f(U.u_in, intro);
+  function buildSDF() {
+    geo = layout();
+    texScale = Math.min(window.devicePixelRatio || 1, 2);
+    var pad = geo.fs * .3;
+    var tw = Math.ceil((geo.ww + pad * 2) * texScale), th = Math.ceil((geo.wh + pad * 2) * texScale);
+    geo.tx = geo.wx - pad; geo.ty = geo.wy - pad; geo.tw = tw / texScale; geo.th = th / texScale;
+    var c2 = document.createElement('canvas'); c2.width = tw; c2.height = th;
+    var ctx = c2.getContext('2d');
+    var fsPx = geo.fs * texScale, lsPx = geo.ls * texScale;
+    ctx.font = geo.weight + ' ' + fsPx + 'px ' + geo.family;
+    ctx.fillStyle = '#000'; ctx.textBaseline = 'alphabetic';
+    var m = ctx.measureText(TEXT), total = m.width + lsPx * (TEXT.length - 1);
+    var asc = m.fontBoundingBoxAscent || fsPx * .9, desc = m.fontBoundingBoxDescent || fsPx * .25;
+    var lineH = geo.lh * texScale;
+    var x0 = (tw - total) / 2, y0 = pad * texScale + (lineH - (asc + desc)) / 2 + asc;
+    for (var i = 0; i < TEXT.length; i++) ctx.fillText(TEXT[i], x0 + ctx.measureText(TEXT.slice(0, i)).width + lsPx * i, y0);
+    var img = ctx.getImageData(0, 0, tw, th).data, n = tw * th;
+    var outer = new Float64Array(n), inner = new Float64Array(n);
+    for (var k = 0; k < n; k++) {
+      var a = img[k * 4 + 3] / 255;
+      if (a >= 1) { outer[k] = 0; inner[k] = INF; }        // inside the glyph
+      else if (a <= 0) { outer[k] = INF; inner[k] = 0; }  // outside
+      else { var dd = .5 - a; outer[k] = dd > 0 ? dd * dd : 0; inner[k] = dd < 0 ? dd * dd : 0; }
+    }
+    edt(outer, tw, th); edt(inner, tw, th);
+    var dist = new Float32Array(n), hgt = new Float32Array(n), Bt = fsPx * .08;
+    for (k = 0; k < n; k++) {
+      dist[k] = Math.sqrt(outer[k]) - Math.sqrt(inner[k]);
+      var t = Math.min(1, Math.max(0, -dist[k] / Bt));
+      hgt[k] = Math.sqrt(1 - (1 - t) * (1 - t)); // round "tube" profile
+    }
+    hgt = boxBlur(hgt, tw, th, Math.max(1, Math.round(Bt * .45)), 2); // soften the creases at corners
+    R = Math.max(8, fsPx * .14);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    if (isGL2) {
+      var rg = new Float32Array(n * 2);
+      for (k = 0; k < n; k++) { rg[k * 2] = dist[k]; rg[k * 2 + 1] = hgt[k]; }
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RG16F, tw, th, 0, gl.RG, gl.FLOAT, rg);
+    } else {
+      var out = new Uint8Array(n * 4);
+      for (k = 0; k < n; k++) {
+        out[k * 4] = Math.max(0, Math.min(255, Math.round((.5 + dist[k] / (2 * R)) * 255)));
+        out[k * 4 + 1] = Math.round(hgt[k] * 255); out[k * 4 + 3] = 255;
+      }
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, tw, th, 0, gl.RGBA, gl.UNSIGNED_BYTE, out);
+    }
+  }
+
+  /* canvas: during the intro it spans from the top of the hero to below the word; afterwards only the word */
+  var cScale = 1, cx = 0, cy = 0, cw = 0, ch = 0;
+  function sizeCanvas(intro) {
+    if (intro) { cx = 0; cy = 0; cw = geo.hw; ch = Math.min(geo.hh, geo.wy + geo.wh + geo.fs * .9); }
+    else { cx = geo.tx; cy = geo.ty; cw = geo.tw; ch = geo.th; }
+    cScale = Math.min(window.devicePixelRatio || 1, 2);
+    if (intro && cw * ch * cScale * cScale > 2.6e6) cScale = Math.sqrt(2.6e6 / (cw * ch)); // intro moves fast; keep it light on 4K
+    canvas.width = Math.round(cw * cScale); canvas.height = Math.round(ch * cScale);
+    canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
+    canvas.style.left = (cx - geo.wx) + 'px'; canvas.style.top = (cy - geo.wy) + 'px';
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    var s = cScale;
+    gl.uniform2f(U.u_res, canvas.width, canvas.height);
+    gl.uniform2f(U.u_t0, (geo.tx - cx) * s, (geo.ty - cy) * s);
+    gl.uniform2f(U.u_ts, geo.tw * s, geo.th * s);
+    gl.uniform1f(U.u_fs, geo.fs * s);
+    gl.uniform1f(U.u_R, R / texScale * s);
+    gl.uniform1f(U.u_float, isGL2 ? 1 : 0); gl.uniform1f(U.u_dsc, s / texScale);
+    gl.uniform1f(U.u_B, geo.fs * .08 * s);
+    gl.uniform1f(U.u_k, geo.fs * .09 * s);
+  }
+
+  /* ---------- timeline (ms) ---------- */
+  var T_FALL = 720, T_SPREAD = 760, T_END = T_FALL + 1150;
+  function ease3(t) { return 1 - Math.pow(1 - t, 3); }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function rnd(i) { var x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+  var drops = [];
+  for (var i = 0; i < MAXD; i++) {
+    var ang = -Math.PI / 2 + (i / (MAXD - 1) - .5) * 2.4 + (rnd(i) - .5) * .25; // fan upwards
+    drops.push({ ang: ang, sp: .85 + rnd(i + 9) * .9, r: .028 + rnd(i + 3) * .04, life: 520 + rnd(i + 5) * 420, off: (rnd(i + 7) - .5) * .5 });
+  }
+  var drArr = new Float32Array(MAXD * 3);
+
+  function frame(t) { // t: ms since start; returns true when finished
+    var s = cScale, fs = geo.fs, ox = geo.wx - cx, oy = geo.wy - cy;
+    var ix = (ox + geo.ww / 2) * s, iy = (oy + geo.wh * .52) * s; // impact point = middle of the word
+    var r0 = Math.max(fs * .2, 18) * s; // never smaller than ~36px across, so it reads on phones
+    gl.uniform1f(U.u_shadow, 1);
+    drArr.fill(0);
+    if (t >= T_END) {
+      gl.uniform3f(U.u_rev, 0, 0, 2e5); gl.uniform3f(U.u_drop, 0, 0, 0); gl.uniform3f(U.u_tail, 0, 0, 0);
+      gl.uniform2f(U.u_dropS, 1, 1);
+      gl.uniform3fv(U.u_dr, drArr);
+      return true;
+    }
+    if (t < 0) {
+      gl.uniform3f(U.u_rev, 0, 0, -1); gl.uniform3f(U.u_drop, 0, 0, 0); gl.uniform3f(U.u_tail, 0, 0, 0);
+      gl.uniform2f(U.u_dropS, 1, 1); gl.uniform1f(U.u_shadow, 0);
+    } else if (t < T_FALL) { // falling, accelerating, stretched teardrop
+      var k = t / T_FALL, y0 = -r0 * 2.2, y = y0 + (iy - y0) * k * k;
+      var st = 1 + .55 * k;
+      gl.uniform3f(U.u_rev, 0, 0, -1);
+      gl.uniform3f(U.u_drop, ix, y, r0 / Math.sqrt(st));
+      gl.uniform2f(U.u_dropS, 1 / Math.sqrt(st), st);
+      gl.uniform3f(U.u_tail, ix, y - r0 * (1.05 + .5 * k), r0 * .32 * (.6 + .4 * k));
+    } else { // impact: drop flattens and flows into the letters, splash droplets fly out and fall back
+      var tt = t - T_FALL, e = ease3(clamp(tt / T_SPREAD, 0, 1));
+      var maxR = Math.hypot(geo.ww / 2 + fs * .3, geo.wh) * s;
+      gl.uniform3f(U.u_rev, ix, iy, Math.max(.001, maxR * e));
+      var sq = clamp(tt / 160, 0, 1), shrink = 1 - ease3(clamp(tt / 520, 0, 1));
+      gl.uniform3f(U.u_drop, ix, iy, r0 * shrink);
+      gl.uniform2f(U.u_dropS, 1 + .9 * sq, 1 - .45 * sq);
+      gl.uniform3f(U.u_tail, 0, 0, 0);
+      var g = fs * 5.2 * s / 1e6; // px per ms²
+      for (var j = 0; j < MAXD; j++) {
+        var d = drops[j], life = clamp(tt / d.life, 0, 1);
+        if (life >= 1) continue;
+        var v = d.sp * fs * s / 330; // px per ms
+        var px = ix + d.off * fs * s + Math.cos(d.ang) * v * tt, py = iy - fs * .1 * s + Math.sin(d.ang) * v * tt + .5 * g * tt * tt;
+        var rr = d.r * fs * s * Math.sin(Math.PI * Math.min(1, life * 1.15 + .08)) * (1 - life * .35);
+        drArr[j * 3] = px; drArr[j * 3 + 1] = py; drArr[j * 3 + 2] = Math.max(0, rr);
+      }
+    }
+    gl.uniform3fv(U.u_dr, drArr);
+    return false;
+  }
+  function render(t) {
+    var done = frame(t);
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    return done;
   }
-  function loop(now) { draw(now); if (running) raf = requestAnimationFrame(loop); }
-  function start() { if (running || reduce || !visible || document.hidden) return; running = true; raf = requestAnimationFrame(loop); }
-  function stop() { running = false; cancelAnimationFrame(raf); }
+
+  var finished = false;
+  function showFinal() { finished = true; sizeCanvas(false); render(1e9); }
 
   function init() {
-    try { build(); } catch (e) { return; }
+    try { buildSDF(); } catch (e) { fail(); return; }
     wrap.appendChild(canvas);
     wrap.classList.add('has-water');
-    introStart = performance.now() + (reduce ? 0 : 350);
-    if (reduce) draw(performance.now()); else start();
-
-    var rt = 0;
-    if ('ResizeObserver' in window) new ResizeObserver(function () {
-      clearTimeout(rt); rt = setTimeout(function () { build(); if (!running) draw(performance.now()); }, 120);
-    }).observe(wrap);
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
-      visible = es[0].isIntersecting; if (visible) start(); else stop();
-    }).observe(wrap);
-    document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
-    canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); stop(); wrap.classList.remove('has-water'); canvas.remove(); });
+    if (reduce) { showFinal(); } else {
+      sizeCanvas(true);
+      render(-1);
+      var start = performance.now() + 250;
+      var step = function (now) {
+        if (finished) return;
+        var t = now - start;
+        if (render(t)) showFinal(); else requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+    var rt = 0, lastW = window.innerWidth;
+    window.addEventListener('resize', function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () {
+        if (window.innerWidth === lastW && finished) return; // height-only change (mobile URL bar): nothing to redraw
+        lastW = window.innerWidth;
+        try { buildSDF(); } catch (e) { return; }
+        if (finished) showFinal(); else sizeCanvas(true);
+      }, 150);
+    });
+    canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); canvas.remove(); wrap.classList.remove('has-water'); fail(); });
   }
 
-  var font = getComputedStyle(h1);
-  var fontStr = font.fontWeight + ' 100px ' + font.fontFamily;
-  if (document.fonts && document.fonts.load) document.fonts.load(fontStr, TEXT).then(init, init);
+  var cs0 = getComputedStyle(h1);
+  if (document.fonts && document.fonts.load) document.fonts.load(cs0.fontWeight + ' 100px ' + cs0.fontFamily, TEXT).then(init, init);
   else window.addEventListener('load', init);
 })();
