@@ -1,6 +1,7 @@
 /* ReiseGlück (Demo) – "Fernweh" aus Wasser (WebGL, einmalige Intro-Animation)
    Ablauf: Ein halbtransparenter 3D-Wassertropfen fällt von oben, trifft auf, fließt in die Form
-   des Wortes und spritzt dabei kleine Tropfen heraus. Danach steht das Wort still (kein Dauer-Loop).
+   des Wortes und spritzt dabei kleine Tropfen heraus. Danach bewegen sich die weichen Kanten ruhig
+   wie die Haut einer Wasserblase (nur solange sichtbar; bei "Bewegung reduzieren" steht alles still).
    Die Buchstaben kommen aus einem Signed Distance Field der echten Schrift (TinySDF-Verfahren),
    gerendert in voller Gerätepixeldichte – scharf in jeder Größe.
    Das echte <h1> bleibt im DOM (Suchmaschinen, Screenreader). Ohne WebGL erscheint es normal weiß;
@@ -31,12 +32,15 @@
     '#ifdef GL_FRAGMENT_PRECISION_HIGH', 'precision highp float;', '#else', 'precision mediump float;', '#endif',
     'uniform sampler2D u_tex;',
     'uniform vec2 u_res, u_t0, u_ts;',
-    'uniform float u_fs, u_R, u_k, u_shadow, u_float, u_dsc, u_B;',
+    'uniform float u_fs, u_R, u_k, u_shadow, u_float, u_dsc, u_B, u_time, u_wob, u_soft;',
     'uniform vec3 u_rev, u_drop, u_tail;',
     'uniform vec2 u_dropS;',
     'uniform vec3 u_dr[' + MAXD + '];',
     'varying vec2 v;',
     'float smin(float a, float b, float k){ float h = clamp(.5+.5*(b-a)/k, 0., 1.); return mix(b, a, h) - k*h*(1.-h); }',
+    // slow, smooth surface waves: the outline breathes like the skin of a water bubble
+    'float wob(vec2 p){ vec2 q = p/u_fs; float t = u_time;',
+    '  return sin(q.x*2.6 + t*1.25)*.45 + sin(q.y*3.4 - t*1.05 + q.x*1.3)*.35 + sin((q.x - q.y)*4.9 + t*1.6)*.2; }',
     'vec4 texS(vec2 p){ return texture2D(u_tex, (p - u_t0)/u_ts); }',
     // R: signed distance (texture px as float, or 8-bit encoded), G: smoothed height of the liquid body
     'float textD(vec2 p){',
@@ -44,9 +48,10 @@
     '  vec2 o = max(max(u_t0 - p, p - (u_t0 + u_ts)), 0.);',
     '  return d + length(o);',
     '}',
+    'float textW(vec2 p){ return textD(p) + u_wob*wob(p); }',
     'float scene(vec2 p){',
     '  float d = 1e5;',
-    '  if (u_rev.z > 0.) { float t = textD(p); d = u_rev.z > 1e5 ? t : -smin(-t, -(length(p - u_rev.xy) - u_rev.z), u_k); }',
+    '  if (u_rev.z > 0.) { float t = textW(p); d = u_rev.z > 1e5 ? t : -smin(-t, -(length(p - u_rev.xy) - u_rev.z), u_k); }',
     '  if (u_drop.z > 0.) {',
     '    vec2 q = (p - u_drop.xy)/u_dropS; float dd = (length(q) - u_drop.z)*min(u_dropS.x, u_dropS.y);',
     '    if (u_tail.z > 0.) dd = smin(dd, length(p - u_tail.xy) - u_tail.z, u_drop.z*.9);',
@@ -67,7 +72,7 @@
     '  float u = clamp(1. + d/u_B, 0., .985);',
     '  vec3 n = normalize(vec3(g*u/sqrt(1. - u*u), 1.));',
     // inside the finished letters use the smoothed height map: rounded liquid, no corner creases
-    '  float dt = textD(p);',
+    '  float dt = textW(p);',
     '  float w = 1. - smoothstep(.5, u_B*.5, abs(dt - d));',
     '  if (w > 0.) {',
     '    vec2 ex = vec2(2.5, 0.);',
@@ -75,6 +80,8 @@
     '    vec3 nh = normalize(vec3(-gh*u_B*2.4, 1.));',
     '    n = normalize(mix(n, nh, w));',
     '  }',
+    '  if (u_wob > 0.) { vec2 gw = vec2(wob(p + vec2(2.,0.)) - wob(p - vec2(2.,0.)), wob(p + vec2(0.,2.)) - wob(p - vec2(0.,2.)))/4.;',
+    '    n = normalize(n + vec3(-gw*u_wob*2.5, 0.)); }',
     '  vec3 V = vec3(0.,0.,1.);',
     '  vec3 L = normalize(vec3(-.42, -.72, .56));',
     '  vec3 L2 = normalize(vec3(.62, .55, .55));',
@@ -86,7 +93,7 @@
     '  vec3 deep = vec3(.0,.30,.52), mid = vec3(.30,.80,.95), pale = vec3(.86,.98,1.);',
     '  vec3 col = mix(deep, mid, lam);',
     '  col = mix(col, pale, fres*.5);',
-    '  float a = clamp(.5 - d, 0., 1.);',
+    '  float a = 1. - smoothstep(-u_soft, u_soft*.7, d);',  // soft, liquid edge
     '  float body = mix(.62, .97, fres);',
     '  float inRim = exp(d/(u_fs*.012))*.75;',
     '  float A = clamp(body + spec + rim*.6 + inRim, 0., 1.)*a;',
@@ -112,7 +119,7 @@
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
   var aLoc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(aLoc); gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
   var U = {};
-  ['u_tex', 'u_res', 'u_t0', 'u_ts', 'u_fs', 'u_R', 'u_float', 'u_dsc', 'u_B', 'u_k', 'u_shadow', 'u_rev', 'u_drop', 'u_tail', 'u_dropS', 'u_dr']
+  ['u_tex', 'u_res', 'u_t0', 'u_ts', 'u_fs', 'u_R', 'u_float', 'u_dsc', 'u_B', 'u_time', 'u_wob', 'u_soft', 'u_k', 'u_shadow', 'u_rev', 'u_drop', 'u_tail', 'u_dropS', 'u_dr']
     .forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
   var tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -178,7 +185,7 @@
     geo.tx = geo.wx - pad; geo.ty = geo.wy - pad; geo.tw = tw / texScale; geo.th = th / texScale;
     var c2 = document.createElement('canvas'); c2.width = tw; c2.height = th;
     var ctx = c2.getContext('2d');
-    var fsPx = geo.fs * texScale, lsPx = geo.ls * texScale;
+    var fsPx = geo.fs * texScale, lsPx = (geo.ls + geo.fs * .03) * texScale; // a little air so the rounded letters don't melt together
     ctx.font = geo.weight + ' ' + fsPx + 'px ' + geo.family;
     ctx.fillStyle = '#000'; ctx.textBaseline = 'alphabetic';
     var m = ctx.measureText(TEXT), total = m.width + lsPx * (TEXT.length - 1);
@@ -187,9 +194,12 @@
     var x0 = (tw - total) / 2, y0 = pad * texScale + (lineH - (asc + desc)) / 2 + asc;
     for (var i = 0; i < TEXT.length; i++) ctx.fillText(TEXT[i], x0 + ctx.measureText(TEXT.slice(0, i)).width + lsPx * i, y0);
     var img = ctx.getImageData(0, 0, tw, th).data, n = tw * th;
+    var soft = new Float32Array(n), rr = Math.max(1, Math.round(fsPx * .026));
+    for (var k = 0; k < n; k++) soft[k] = img[k * 4 + 3] / 255;
+    soft = boxBlur(soft, tw, th, rr, 2); // melts the corners into rounded, liquid shapes
     var outer = new Float64Array(n), inner = new Float64Array(n);
-    for (var k = 0; k < n; k++) {
-      var a = img[k * 4 + 3] / 255;
+    for (k = 0; k < n; k++) {
+      var a = Math.min(1, Math.max(0, (soft[k] - .5) * (2 * rr + 1) + .5));
       if (a >= 1) { outer[k] = 0; inner[k] = INF; }        // inside the glyph
       else if (a <= 0) { outer[k] = INF; inner[k] = 0; }  // outside
       else { var dd = .5 - a; outer[k] = dd > 0 ? dd * dd : 0; inner[k] = dd < 0 ? dd * dd : 0; }
@@ -238,6 +248,8 @@
     gl.uniform1f(U.u_R, R / texScale * s);
     gl.uniform1f(U.u_float, isGL2 ? 1 : 0); gl.uniform1f(U.u_dsc, s / texScale);
     gl.uniform1f(U.u_B, geo.fs * .08 * s);
+    gl.uniform1f(U.u_wob, reduce ? 0 : geo.fs * .011 * s);
+    gl.uniform1f(U.u_soft, Math.max(1, geo.fs * .007 * s));
     gl.uniform1f(U.u_k, geo.fs * .09 * s);
   }
 
@@ -303,8 +315,12 @@
     return done;
   }
 
-  var finished = false;
-  function showFinal() { finished = true; sizeCanvas(false); render(1e9); }
+  var finished = false, running = false, visible = true, raf = 0, t0 = performance.now();
+  function setTime(now) { gl.uniform1f(U.u_time, (now - t0) / 1000); }
+  function idleStep(now) { if (!running) return; setTime(now); render(1e9); raf = requestAnimationFrame(idleStep); }
+  function idle() { if (running || !finished || reduce || !visible || document.hidden) return; running = true; raf = requestAnimationFrame(idleStep); }
+  function stopIdle() { running = false; cancelAnimationFrame(raf); }
+  function showFinal() { finished = true; sizeCanvas(false); setTime(performance.now()); render(1e9); idle(); }
 
   function init() {
     try { buildSDF(); } catch (e) { fail(); return; }
@@ -317,6 +333,7 @@
       var step = function (now) {
         if (finished) return;
         var t = now - start;
+        setTime(now);
         if (render(t)) showFinal(); else requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
@@ -328,9 +345,14 @@
         if (window.innerWidth === lastW && finished) return; // height-only change (mobile URL bar): nothing to redraw
         lastW = window.innerWidth;
         try { buildSDF(); } catch (e) { return; }
-        if (finished) showFinal(); else sizeCanvas(true);
+        if (finished) { stopIdle(); showFinal(); } else sizeCanvas(true);
       }, 150);
     });
+    // the gentle wobble only runs while the word is on screen and the tab is visible
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) {
+      visible = es[0].isIntersecting; if (visible) idle(); else stopIdle();
+    }).observe(wrap);
+    document.addEventListener('visibilitychange', function () { if (document.hidden) stopIdle(); else idle(); });
     canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); canvas.remove(); wrap.classList.remove('has-water'); fail(); });
   }
 
