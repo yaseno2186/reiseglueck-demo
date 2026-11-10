@@ -18,7 +18,7 @@
 <link rel="preload" href="assets/fonts/bricolage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="assets/img/strand-palmen-1200.webp" imagesrcset="assets/img/strand-palmen-1200.webp 1200w, assets/img/strand-palmen-2400.webp 2400w" imagesizes="100vw" fetchpriority="high">
-<link rel="stylesheet" href="assets/css/style.css?v=22">
+<link rel="stylesheet" href="assets/css/style.css?v=23">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -51,6 +51,7 @@
         <a href="preise.html">Preise</a>
         <a href="bewertungen.html">Bewertungen</a>
         <a href="buchen.html">Buchen</a>
+        <a href="termin.html">Termin</a>
     </nav>
     <div class="header-actions">
       <button class="menu-btn" type="button" data-menu-open aria-expanded="false" aria-controls="drawer"><span class="menu-label">Menü</span></button>
@@ -79,7 +80,7 @@
     </nav>
     <div class="drawer-foot">
       <p><a class="btn btn-block" href="buchen.html">Reise buchen</a></p>
-      <p>Lieber erst reden? <a href="beratung.html">Kostenlose Beratung</a><br><a href="tel:+493000000000">030 000 000 00</a></p>
+      <p>Lieber erst reden? <a href="termin.html">Beratungstermin buchen</a><br><a href="tel:+493000000000">030 000 000 00</a></p>
     </div>
   </div>
 </div>
@@ -89,9 +90,8 @@
     <img src="assets/img/strand-palmen-1200.webp" srcset="assets/img/strand-palmen-1200.webp 1200w, assets/img/strand-palmen-2400.webp 2400w" sizes="100vw" width="2400" height="1656" alt="Palmenstrand mit türkisem Meer, von oben fotografiert" fetchpriority="high" decoding="async">
   </div>
   <div class="frame hero-content">
-    <div class="wave-title" data-hero style="--d:0">
+    <div class="wave-title" data-water-title data-hero style="--d:0">
       <h1 id="hero-title">Fernweh</h1>
-      <span class="wave-fill" aria-hidden="true">Fernweh</span>
     </div>
     <p class="hero-lead" data-hero style="--d:1">Ihr Traumurlaub, persönlich geplant.<br> Flug, Hotel und Ausflüge aus einer Hand.</p>
     <div class="hero-ctas" data-hero style="--d:2">
@@ -239,7 +239,7 @@
         <li data-reveal style="--d:2"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#tag"/></svg><div><strong>Prüft Preise und Verfügbarkeit</strong><span>Sie bekommen ein Angebot, das heute buchbar ist.</span></div></li>
         <li data-reveal style="--d:3"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#phone"/></svg><div><strong>Bleibt erreichbar</strong><span>Vor der Abreise, unterwegs und nach der Rückkehr.</span></div></li>
       </ul>
-      <a class="btn" href="beratung.html">Kostenlos beraten lassen <svg class="i i-arrow" aria-hidden="true"><use href="assets/icons.svg#arrow"/></svg></a>
+      <div class="hero-ctas"><a class="btn" href="termin.html"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#calendar"/></svg>Beratungstermin buchen</a><a class="btn btn-ghost" href="beratung.html">Rückruf anfragen</a></div>
     </div>
   </div>
 </section>
@@ -272,7 +272,7 @@
       <p class="note">Ihre Frage ist nicht dabei? Rufen Sie an unter <a href="tel:+493000000000">030 000 000 00</a> oder schreiben Sie an <a href="mailto:info@reiseglueck.example">info@reiseglueck.example</a>.</p>
     </div>
     <div class="faq">
-      <details><summary>Was kostet die Beratung?<svg class="i" aria-hidden="true"><use href="assets/icons.svg#plus"/></svg></summary><div class="faq-a"><p>Das erste Gespräch ist kostenlos und unverbindlich. Für weitere Services wie eine individuelle Reiseplanung gibt es feste Pauschalen, die Sie unter <a href="preise.html">Leistungen &amp; Preise</a> finden.</p></div></details>
+      <details><summary>Was kostet die Beratung?<svg class="i" aria-hidden="true"><use href="assets/icons.svg#plus"/></svg></summary><div class="faq-a"><p>Das erste Gespräch ist kostenlos und unverbindlich. Einen festen Termin bei Lena oder Jonas buchen Sie direkt im <a href="termin.html">Terminkalender</a>. Für weitere Services wie eine individuelle Reiseplanung gibt es feste Pauschalen, die Sie unter <a href="preise.html">Leistungen &amp; Preise</a> finden.</p></div></details>
       <details><summary>Ist meine Buchungsanfrage verbindlich?<svg class="i" aria-hidden="true"><use href="assets/icons.svg#plus"/></svg></summary><div class="faq-a"><p>Nein. Sie senden eine unverbindliche Anfrage. Ihr Berater prüft Verfügbarkeit und Preis und schickt Ihnen ein Angebot. Gebucht wird erst, wenn Sie dieses Angebot bestätigen.</p></div></details>
       <details><summary>Kann ich Flug, Hotel und Ausflüge zusammen buchen?<svg class="i" aria-hidden="true"><use href="assets/icons.svg#plus"/></svg></summary><div class="faq-a"><p>Ja. Wir stellen Flug, Hotel, Transfer und Aktivitäten als Paket zusammen. Einzelne Bausteine wie nur einen Flug oder nur ein Hotel buchen wir ebenfalls.</p></div></details>
       <details><summary>Was passiert, wenn unterwegs etwas nicht klappt?<svg class="i" aria-hidden="true"><use href="assets/icons.svg#plus"/></svg></summary><div class="faq-a"><p>Sie rufen Ihren Berater an. Er kennt Ihre Buchung und kümmert sich um Umbuchung, Transfer oder Hotelwechsel.</p></div></details>
@@ -289,7 +289,7 @@
     <p data-reveal style="--d:1">Erzählen Sie uns, wohin es gehen soll. Ihr Berater meldet sich mit einem passenden, unverbindlichen Angebot.</p>
     <div class="hero-ctas" data-reveal style="--d:2">
       <a class="btn" href="buchen.html">Reise buchen <svg class="i i-arrow" aria-hidden="true"><use href="assets/icons.svg#arrow"/></svg></a>
-      <a class="btn btn-ghost" href="beratung.html">Kostenlos beraten lassen</a>
+      <a class="btn btn-ghost" href="termin.html"><svg class="i" aria-hidden="true"><use href="assets/icons.svg#calendar"/></svg>Beratungstermin buchen</a>
     </div>
   </div>
 </section>
@@ -319,6 +319,7 @@
         <h2>Service</h2>
         <ul>
           <li><a href="beratung.html">Kostenlose Beratung</a></li>
+          <li><a href="termin.html">Termin buchen</a></li>
           <li><a href="buchen.html">Reise buchen</a></li>
           <li><a href="bewertungen.html">Bewertungen</a></li>
           <li><a href="ueber-uns.html">Über uns</a></li>
@@ -340,11 +341,12 @@
     </div>
   </div>
 </footer>
-<script src="assets/js/vendor/lenis.min.js?v=22" defer></script>
-<script src="data/offers.js?v=22" defer></script>
-<script src="data/reviews.js?v=22" defer></script>
-<script src="assets/js/site.js?v=22" defer></script>
-<script src="assets/js/reviews.js?v=22" defer></script>
-<script src="assets/js/motion.js?v=22" defer></script>
+<script src="assets/js/vendor/lenis.min.js?v=23" defer></script>
+<script src="data/offers.js?v=23" defer></script>
+<script src="data/reviews.js?v=23" defer></script>
+<script src="assets/js/site.js?v=23" defer></script>
+<script src="assets/js/reviews.js?v=23" defer></script>
+<script src="assets/js/water-title.js?v=23" defer></script>
+<script src="assets/js/motion.js?v=23" defer></script>
 </body>
 </html>

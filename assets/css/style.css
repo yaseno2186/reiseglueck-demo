@@ -213,20 +213,14 @@ body.lock { overflow: hidden; }
 .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse 70% 55% at 50% 50%, rgba(14, 36, 73, .38), rgba(14, 36, 73, 0) 70%), linear-gradient(180deg, rgba(14, 36, 73, .25) 0%, rgba(14, 36, 73, .05) 30%, rgba(14, 36, 73, .1) 70%, rgba(14, 36, 73, .55) 100%); }
 /* centred stack like the reference: big word, two-line lead, one pill */
 .hero-content { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: var(--header-h); padding-bottom: 4vh; }
-/* "Fernweh": white letters with animated sea water inside them (wave layers clipped to the glyphs) */
+/* "Fernweh" rendered as water by assets/js/water-title.js (WebGL canvas over the real h1) */
 .wave-title { position: relative; margin: 0 0 clamp(16px, 2vw, 28px); }
-.hero h1, .wave-fill { font-family: var(--f-display); font-variation-settings: "opsz" 96; font-weight: 700; font-size: clamp(3.6rem, 14vw, 13rem); line-height: .9; letter-spacing: -.02em; }
-.hero h1 { color: var(--white); margin: 0; max-width: none; text-shadow: 0 2px 40px rgba(14, 36, 73, .25); }
-.wave-fill { position: absolute; inset: 0; display: block; text-align: center; white-space: nowrap; color: transparent; pointer-events: none; user-select: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2385EAF2'/%3E%3Cstop offset='.45' stop-color='%2322B5C8'/%3E%3Cstop offset='1' stop-color='%23086A8C'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 48 Q25 36 50 48 T100 48 T150 48 T200 48 V100 H0Z' fill='url(%23g)'/%3E%3Cpath d='M0 48 Q25 36 50 48 T100 48 T150 48 T200 48' fill='none' stroke='%23fff' stroke-width='3.5' stroke-opacity='.95'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'%3E%3Cpath d='M0 42 Q50 58 100 42 T200 42 V100 H0Z' fill='%23C4F4F8' fill-opacity='.85'/%3E%3C/svg%3E");
-  background-repeat: repeat-x; background-size: 2.4em 100%, 1.5em 100%; background-position: 0 .1em, 0 .13em;
-  -webkit-background-clip: text; background-clip: text; }
+.hero h1 { font-family: var(--f-display); font-variation-settings: "opsz" 96; font-weight: 700; font-size: clamp(3.6rem, 14vw, 13rem); line-height: .9; letter-spacing: -.02em; color: var(--white); margin: 0; max-width: none; text-shadow: 0 2px 40px rgba(14, 36, 73, .25); }
+.wave-title.has-water h1, .wave-title.has-water h1 * { color: transparent !important; text-shadow: none; }
+.water-canvas { position: absolute; pointer-events: none; display: block; }
 @media (prefers-reduced-motion: no-preference) {
-  .js .wave-fill { animation: wave-in 1.4s var(--ease-expo) 1.25s both, wave-x 9s linear infinite, wave-y 4.5s ease-in-out infinite alternate; }
+  .js .water-canvas { animation: fade-in .6s ease-out both; }
 }
-@keyframes wave-in { from { opacity: 0; background-position-y: .7em, .75em; } }
-@keyframes wave-x { to { background-position-x: -2.4em, 1.5em; } }
-@keyframes wave-y { 0% { background-position-y: .16em, .2em; } 100% { background-position-y: .02em, .06em; } }
 .hero-lead { font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; color: var(--white); max-width: 34ch; margin: 0 0 clamp(20px, 2.4vw, 32px); font-weight: 500; text-shadow: 0 1px 16px rgba(14, 36, 73, .35); }
 .hero-ctas { display: flex; flex-wrap: wrap; gap: var(--s-3); }
 .hero .hero-ctas { flex-direction: column; align-items: center; gap: var(--s-4); }
