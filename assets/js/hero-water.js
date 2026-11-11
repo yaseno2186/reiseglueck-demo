@@ -92,7 +92,9 @@
     if (isNaN(px)) px = .5; if (isNaN(py)) py = .5;
     var sc = Math.max(W / iw, H / ih), dw = iw * sc, dh = ih * sc;
     gl.uniform2f(U.u_res, W, H);
-    gl.uniform4f(U.u_rect, (W - dw) * px, (H - dh) * py, dw, dh);
+    // snap to whole device pixels like the browser does for the <img>, so the canvas and the palm cut-out line up exactly
+    var x = Math.round((W - dw) * px), y = Math.round((H - dh) * py);
+    gl.uniform4f(U.u_rect, x, y, Math.round(x + dw) - x, Math.round(y + dh) - y);
   }
 
   var raf = 0, visible = true, t0 = performance.now();
