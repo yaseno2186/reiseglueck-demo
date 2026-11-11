@@ -16,3 +16,18 @@ Copied from the public repositories below. Each skill folder keeps its own LICEN
 Not installed: skill-creator from freshtechbro (duplicates a built-in skill), the two mcpmarket.com skills (page could not be fetched), landing-page-design (source not identified).
 
 Note: scroll-craft's kie.mjs script sends prompts and uploaded images to api.kie.ai and kieai.redpandaai.co when run, and needs KIE_AI_API_KEY. Only run it on purpose.
+
+## Batch 2
+
+| Source repo (commit) | License | Skills |
+|---|---|---|
+| nextlevelbuilder/ui-ux-pro-max-skill (6ae86f6) | MIT | ui-ux-pro-max, design, design-system, brand, slides, ui-styling, banner-design |
+| blader/humanizer (b48c832) | MIT | humanizer |
+| tt-a1i/archify (7e45f36) | Apache-2.0 | archify (main skill only; `archify/examples` sample output removed to save space) |
+| JuliusBrussee/caveman (3dc497a) | Apache-2.0 at root | cavecrew, caveman, caveman-commit, caveman-compress, caveman-evidence-review, caveman-explore, caveman-help, caveman-learn, caveman-review, caveman-stats, investigate-first, lean-build, megacave, migration, safe-refactor, surgical-patch, ultracave, verify-and-stop |
+| PierreAndreis/pierre-skills (3158a4c) | MIT | animation |
+| segersniels/dotfiles (485e5ff) | **No license file** | web-animation-design (unlicensed: reuse rights not granted by the author) |
+
+Skipped from caveman: caveman-setup, caveman-manage, caveman-optimize, caveman-discover. These send work through Caveman Cloud (caveman.so). Their hooks (src/hooks) were not installed, so caveman-stats and the mode tracking in `caveman` will not work here.
+Skipped from the others: ui-ux-pro-max's `cli/`, the `.agents/` developer skills in archify, and all plugin/hook folders.
+Note: archify checks https://tt-a1i.github.io/archify/skill-updates/archify/stable.json for updates.
