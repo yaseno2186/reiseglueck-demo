@@ -36,6 +36,7 @@
     'uniform vec3 u_rev, u_drop, u_tail;',
     'uniform vec2 u_dropS;',
     'uniform vec3 u_dr[' + MAXD + '];',
+    'uniform sampler2D u_mask; uniform vec4 u_mrect; uniform float u_mon;',
     'varying vec2 v;',
     'float smin(float a, float b, float k){ float h = clamp(.5+.5*(b-a)/k, 0., 1.); return mix(b, a, h) - k*h*(1.-h); }',
     // slow, smooth surface waves: the outline breathes like the skin of a water bubble
@@ -111,7 +112,11 @@
     '  col = mix(col, vec3(1.), foam*.9);',
     '  float A = clamp(body + spec + rim*.6 + inRim + foam*.6, 0., 1.)*a;',
     '  vec3 c = (col*max(body, foam*.9) + vec3(1.)*spec + pale*(rim + inRim))*a;',
-    '  gl_FragColor = vec4(c, A);',
+    // palm in front: cut the water away where the photo's palm leaves/trunk are
+    '  float palm = 0.;',
+    '  if (u_mon > .5) { vec2 mu = (p - u_mrect.xy)/u_mrect.zw;',
+    '    if (mu.x > 0. && mu.y > 0. && mu.x < 1. && mu.y < 1.) palm = texture2D(u_mask, mu).r; }',
+    '  gl_FragColor = vec4(c, A)*(1. - palm);',
     '}'
   ].join('\n');
 
@@ -132,12 +137,46 @@
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
   var aLoc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(aLoc); gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
   var U = {};
-  ['u_tex', 'u_res', 'u_t0', 'u_ts', 'u_fs', 'u_R', 'u_float', 'u_dsc', 'u_B', 'u_time', 'u_wob', 'u_soft', 'u_k', 'u_shadow', 'u_rev', 'u_drop', 'u_tail', 'u_dropS', 'u_dr']
+  ['u_tex', 'u_res', 'u_t0', 'u_ts', 'u_fs', 'u_R', 'u_float', 'u_dsc', 'u_B', 'u_time', 'u_wob', 'u_soft', 'u_k', 'u_shadow', 'u_rev', 'u_drop', 'u_tail', 'u_dropS', 'u_dr', 'u_mask', 'u_mrect', 'u_mon']
     .forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
   var tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.uniform1i(U.u_tex, 0);
+
+  /* palm mask: lets the palm of the hero photo sit in front of the water word */
+  var bgImg = hero.querySelector('.hero-media img'), maskReady = false;
+  var maskTex = gl.createTexture();
+  gl.uniform1i(U.u_mask, 1); gl.uniform1f(U.u_mon, 0);
+  if (bgImg) {
+    var mimg = new Image();
+    mimg.onload = function () {
+      gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, maskTex);
+      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, gl.LUMINANCE, gl.UNSIGNED_BYTE, mimg);
+      [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach(function (k) { gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE); });
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.activeTexture(gl.TEXTURE0);
+      maskReady = true;
+      if (finished && !running) render(1e9); // static frame (reduced motion): redraw once with the palm in front
+    };
+    mimg.src = 'assets/img/strand-palmen-maske.png';
+  }
+  // where the (object-fit: cover, transformed) photo sits, in this canvas' pixels
+  function updateMask() {
+    if (!maskReady || !bgImg.naturalWidth) { gl.uniform1f(U.u_mon, 0); return; }
+    var r = bgImg.getBoundingClientRect(), c = canvas.getBoundingClientRect();
+    if (!c.width || !r.width) return;
+    var pos = getComputedStyle(bgImg).objectPosition.split(' ');
+    var px = parseFloat(pos[0]) / 100, py = parseFloat(pos[1] || pos[0]) / 100;
+    if (isNaN(px)) px = .5; if (isNaN(py)) py = .5;
+    var sc = Math.max(r.width / bgImg.naturalWidth, r.height / bgImg.naturalHeight);
+    var dw = bgImg.naturalWidth * sc, dh = bgImg.naturalHeight * sc;
+    var ox = r.left + (r.width - dw) * px, oy = r.top + (r.height - dh) * py;
+    var k = canvas.width / c.width;
+    gl.uniform4f(U.u_mrect, (ox - c.left) * k, (oy - c.top) * k, dw * k, dh * k);
+    gl.uniform1f(U.u_mon, 1);
+  }
   gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
   /* ---------- signed distance field of the word (TinySDF algorithm, subpixel accurate) ---------- */
@@ -323,6 +362,7 @@
   }
   function render(t) {
     var done = frame(t);
+    updateMask();
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     return done;
