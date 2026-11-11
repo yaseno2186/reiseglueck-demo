@@ -209,8 +209,15 @@ body.lock { overflow: hidden; }
 /* ---------- Hero (Start) ---------- */
 .hero { position: relative; min-height: max(560px, 100svh); color: var(--white); display: flex; align-items: center; isolation: isolate; overflow: hidden; background: var(--navy-900); }
 .hero-media { position: absolute; inset: 0; z-index: -2; }
-.hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 88%; }
-.hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse 70% 55% at 50% 50%, rgba(14, 36, 73, .38), rgba(14, 36, 73, 0) 70%), linear-gradient(180deg, rgba(14, 36, 73, .25) 0%, rgba(14, 36, 73, .05) 30%, rgba(14, 36, 73, .1) 70%, rgba(14, 36, 73, .55) 100%); }
+.hero-media img, .hero-palm-zoom img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 88%; }
+/* palm in front of the headline: the photo again, cut down to the palm crown and trunk (mask, same cover crop),
+   shaded like the photo below and clipped by hero-palm.js to the headline's box, so only "Fernweh" goes behind the leaves */
+.hero-palm { position: absolute; inset: 0; z-index: 1; pointer-events: none; clip-path: inset(100%); }
+.hero-palm-media, .hero-palm-zoom { position: absolute; inset: 0; }
+.hero-palm-zoom { -webkit-mask: url(../img/strand-palmen-palme.png) 62% 88% / cover no-repeat; mask: url(../img/strand-palmen-palme.png) 62% 88% / cover no-repeat; }
+.hero-palm-zoom::after { content: ""; position: absolute; inset: 0; background: var(--hero-shade); }
+.hero { --hero-shade: radial-gradient(ellipse 70% 55% at 50% 50%, rgba(14, 36, 73, .38), rgba(14, 36, 73, 0) 70%), linear-gradient(180deg, rgba(14, 36, 73, .25) 0%, rgba(14, 36, 73, .05) 30%, rgba(14, 36, 73, .1) 70%, rgba(14, 36, 73, .55) 100%); }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--hero-shade); }
 /* centred stack like the reference: big word, two-line lead, one pill */
 .hero-content { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: var(--header-h); padding-bottom: 4vh; }
 /* "Fernweh" rendered as water by assets/js/water-title.js (WebGL canvas over the real h1) */
@@ -714,7 +721,7 @@ legend { padding: 0; margin-bottom: var(--s-2); }
   .js h2[data-reveal], .js p[data-reveal], .js li.step[data-reveal], .js li.stat[data-reveal] { filter: blur(10px); }
   .js h2[data-reveal].is-in, .js p[data-reveal].is-in, .js li.step[data-reveal].is-in, .js li.stat[data-reveal].is-in { filter: none; }
   .js .hero [data-hero] { opacity: 0; transform: translateY(28px); filter: blur(10px); animation: hero-in 1.2s var(--ease-expo) forwards; animation-delay: calc(var(--d, 0) * 140ms + 450ms); }
-  .js .hero-media img { animation: hero-zoom 2.8s var(--ease-expo) both; }
+  .js .hero-media img, .js .hero-palm-zoom { animation: hero-zoom 2.8s var(--ease-expo) both; }
 
   /* image reveals: frame opens, photo settles from a slight zoom */
   .js .dest[data-reveal] { opacity: 1; transform: none; clip-path: inset(14% 10% 0 10% round var(--r-lg)); transition: clip-path 1.3s var(--ease-expo); transition-delay: calc(var(--d, 0) * 90ms); }
@@ -736,7 +743,7 @@ legend { padding: 0; margin-bottom: var(--s-2); }
 .motion .rise.rise-done .rw-mask { clip-path: none; }
 .motion .rise .rw { display: inline-block; transform: translate3d(0, 108%, 0) rotate(4deg); transform-origin: 0 100%; opacity: 0; }
 .motion .rise.rise-in .rw { transform: none; opacity: 1; transition: transform 1.25s var(--ease-expo), opacity .6s ease-out; transition-delay: calc(var(--i, 0) * 75ms + 150ms); }
-.motion .hero-media, .motion .hero-content { will-change: transform; }
+.motion .hero-media, .motion .hero-palm-media, .motion .hero-content { will-change: transform; }
 .motion .plx { will-change: translate; }
 .motion .cta-band > img, .motion .page-hero.with-img > img { top: -14%; height: 128%; }
 .motion .dest img.plx { top: -8%; height: 116%; }
