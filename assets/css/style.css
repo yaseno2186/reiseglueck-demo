@@ -216,7 +216,7 @@ body.lock { overflow: hidden; }
    shaded like the photo below and clipped by hero-palm.js to the headline's box, so only "Fernweh" goes behind the leaves */
 .hero-palm { position: absolute; inset: 0; z-index: 1; pointer-events: none; clip-path: inset(100%); }
 .hero-palm-media, .hero-palm-zoom { position: absolute; inset: 0; }
-.hero-palm-zoom { -webkit-mask: url(../img/strand-palmen-palme.png?v=2) 62% 88% / cover no-repeat; mask: url(../img/strand-palmen-palme.png?v=2) 62% 88% / cover no-repeat; }
+.hero-palm-zoom { -webkit-mask: url(../img/strand-palmen-palme.webp) 62% 88% / cover no-repeat; mask: url(../img/strand-palmen-palme.webp) 62% 88% / cover no-repeat; }
 .hero-palm-zoom::after { content: ""; position: absolute; inset: 0; background: var(--hero-shade); }
 .hero { --hero-shade: radial-gradient(ellipse 70% 55% at 50% 50%, rgba(14, 36, 73, .38), rgba(14, 36, 73, 0) 70%), linear-gradient(180deg, rgba(14, 36, 73, .25) 0%, rgba(14, 36, 73, .05) 30%, rgba(14, 36, 73, .1) 70%, rgba(14, 36, 73, .55) 100%); }
 .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--hero-shade); }

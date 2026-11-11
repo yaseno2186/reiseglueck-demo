@@ -7,8 +7,12 @@
   var media = document.querySelector('.hero-media'), img = media && media.querySelector('img');
   if (!img) return;
   var canvas = document.createElement('canvas');
-  var gl = canvas.getContext('webgl', { alpha: false, antialias: false, premultipliedAlpha: false, powerPreference: 'low-power' });
+  var opts = { alpha: false, antialias: false, premultipliedAlpha: false };
+  // WebGL2 can mipmap the non-power-of-two photo, so it stays crisp without shimmering when drawn smaller than its file
+  var gl = canvas.getContext('webgl2', opts), gl2 = !!gl;
+  if (!gl) gl = canvas.getContext('webgl', opts);
   if (!gl) return;
+  var aniso = gl.getExtension('EXT_texture_filter_anisotropic');
   canvas.className = 'hero-water';
   canvas.setAttribute('aria-hidden', 'true');
 
@@ -24,6 +28,7 @@
     '  vec2 px = vec2(gl_FragCoord.x, u_res.y - gl_FragCoord.y);',
     '  vec2 uv = (px - u_rect.xy)/u_rect.zw;',
     '  vec3 m = texture2D(u_mask, uv).rgb; float w = m.r, s = m.g;',
+    '  if (w + s < .003) { gl_FragColor = vec4(texture2D(u_img, uv).rgb, 1.); return; }', // sand and palms: the photo, untouched
     '  vec2 q = uv*vec2(u_rect.z/u_rect.w, 1.);',      // aspect-correct, 1 unit = image height
     '  float t = u_t;',
     // open water: drifting swell + small choppy ripples
@@ -59,11 +64,16 @@
   var U = {}; ['u_img', 'u_mask', 'u_res', 'u_rect', 'u_t'].forEach(function (k) { U[k] = gl.getUniformLocation(prog, k); });
   gl.uniform1i(U.u_img, 0); gl.uniform1i(U.u_mask, 1);
 
-  function texture(unit, source) {
+  function texture(unit, source, mip) {
     var t = gl.createTexture(); gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, source);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    if (mip && gl2) {
+      gl.generateMipmap(gl.TEXTURE_2D);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+      if (aniso) gl.texParameterf(gl.TEXTURE_2D, aniso.TEXTURE_MAX_ANISOTROPY_EXT, Math.min(8, gl.getParameter(aniso.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
+    } else gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   }
   function loadImage(src) {
     return new Promise(function (ok, no) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = no; i.src = src; });
@@ -73,7 +83,7 @@
   var W = 0, H = 0, iw = 2400, ih = 1656;
   function size() {
     var cw = media.clientWidth, ch = media.clientHeight;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2), max = 4.2e6;
+    var dpr = Math.min(window.devicePixelRatio || 1, 3), max = 8.4e6; // full device resolution up to 4K
     if (cw * ch * dpr * dpr > max) dpr = Math.sqrt(max / (cw * ch));
     W = Math.round(cw * dpr); H = Math.round(ch * dpr);
     if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; gl.viewport(0, 0, W, H); }
@@ -100,10 +110,17 @@
     });
   }
 
-  var src = img.currentSrc || img.src;
-  Promise.all([loadImage(src), loadImage('assets/img/strand-palmen-wasser.png'), zoomDone()]).then(function (r) {
+  // pick the photo file for the size it is drawn at (device pixels), within the GPU's texture limit
+  function pickSource() {
+    var cw = media.clientWidth, ch = media.clientHeight, dpr = Math.min(window.devicePixelRatio || 1, 3);
+    var need = Math.max(cw, ch * 2400 / 1656) * dpr, maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    var files = [1200, 2400, 3840].filter(function (w) { return w <= maxTex; });
+    for (var i = 0; i < files.length; i++) if (files[i] >= need * .9) break;
+    return 'assets/img/strand-palmen-' + files[Math.min(i, files.length - 1)] + '.webp?v=2';
+  }
+  Promise.all([loadImage(pickSource()), loadImage('assets/img/strand-palmen-wasser.png'), zoomDone()]).then(function (r) {
     iw = r[0].naturalWidth; ih = r[0].naturalHeight;
-    texture(0, r[0]); texture(1, r[1]);
+    texture(0, r[0], true); texture(1, r[1], false);
     media.appendChild(canvas);
     size(); draw(performance.now());
     requestAnimationFrame(function () { canvas.classList.add('on'); });
