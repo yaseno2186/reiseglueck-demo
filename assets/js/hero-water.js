@@ -90,11 +90,11 @@
     var pos = getComputedStyle(img).objectPosition.split(' ');
     var px = parseFloat(pos[0]) / 100, py = parseFloat(pos[1] || pos[0]) / 100;
     if (isNaN(px)) px = .5; if (isNaN(py)) py = .5;
-    var sc = Math.max(W / iw, H / ih), dw = iw * sc, dh = ih * sc;
     gl.uniform2f(U.u_res, W, H);
-    // snap to whole device pixels like the browser does for the <img>, so the canvas and the palm cut-out line up exactly
-    var x = Math.round((W - dw) * px), y = Math.round((H - dh) * py);
-    gl.uniform4f(U.u_rect, x, y, Math.round(x + dw) - x, Math.round(y + dh) - y);
+    // the browser lays the cover-fitted <img> out on whole CSS pixels; do the same so the canvas and the palm cut-out line up exactly
+    var sc = Math.max(cw / iw, ch / ih), dw = iw * sc, dh = ih * sc, k = W / cw;
+    var x = Math.round((cw - dw) * px), y = Math.round((ch - dh) * py);
+    gl.uniform4f(U.u_rect, x * k, y * k, (Math.round(x + dw) - x) * k, (Math.round(y + dh) - y) * k);
   }
 
   var raf = 0, visible = true, t0 = performance.now();
