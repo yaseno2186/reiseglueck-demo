@@ -28,26 +28,28 @@
     '  vec2 px = vec2(gl_FragCoord.x, u_res.y - gl_FragCoord.y);',
     '  vec2 uv = (px - u_rect.xy)/u_rect.zw;',
     '  vec3 m = texture2D(u_mask, uv).rgb; float w = m.r, s = m.g;',
-    '  if (w + s < .003) { gl_FragColor = vec4(texture2D(u_img, uv).rgb, 1.); return; }', // sand and palms: the photo, untouched
-    '  vec2 q = uv*vec2(u_rect.z/u_rect.w, 1.);',      // aspect-correct, 1 unit = image height
-    '  float t = u_t;',
+    // the photo is always sampled outside the branch: texture lookups inside non-uniform control flow get broken
+    // mip-level derivatives on the GPU, which showed as a dotted line of wrong pixels along the edge of the water
+    '  vec2 off = vec2(0.); float mul = 1.; vec3 add = vec3(0.);',
+    '  if (w + s > .003) {',                              // sand and palms skip the water maths
+    '    vec2 q = uv*vec2(u_rect.z/u_rect.w, 1.);',      // aspect-correct, 1 unit = image height
+    '    float t = u_t;',
     // open water: drifting swell + small choppy ripples
-    '  vec2 d = vec2(fbm(q*7. + vec2(t*.10, t*.06)) - .5, fbm(q*7. + vec2(5.2, 1.3) - vec2(t*.07, t*.11)) - .5)*2.;',
-    '  d += vec2(.35, 1.)*sin(q.y*38. + q.x*9. - t*1.3 + 3.*n(q*3. + t*.05))*.35;',
-    '  vec2 off = d*w*4.;',                               // up to ~4 px
+    '    vec2 d = vec2(fbm(q*7. + vec2(t*.10, t*.06)) - .5, fbm(q*7. + vec2(5.2, 1.3) - vec2(t*.07, t*.11)) - .5)*2.;',
+    '    d += vec2(.35, 1.)*sin(q.y*38. + q.x*9. - t*1.3 + 3.*n(q*3. + t*.05))*.35;',
+    '    off = d*w*4.;',                                  // up to ~4 px
     // surf band: foam rolls up the beach and back
-    '  float sw = sin(t*.55 + q.x*2.4) + .5*sin(t*.9 - q.x*4.1);',
-    '  off += vec2(.15, 1.)*sw*s*7.;',
-    '  vec3 c = texture2D(u_img, uv + off/u_rect.zw).rgb;',
+    '    float sw = sin(t*.55 + q.x*2.4) + .5*sin(t*.9 - q.x*4.1);',
+    '    off += vec2(.15, 1.)*sw*s*7.;',
     // light on the water: slow brighter/darker swell patches and thin, irregular caustic ridges
-    '  float sl = fbm(q*3.5 + vec2(t*.05, -t*.08)) - .5;',
-    '  vec2 wq = q*11. + 1.6*vec2(fbm(q*4. + t*.09), fbm(q*4. + 9.3 - t*.07));',
-    '  float rd = 1. - abs(fbm(wq + vec2(t*.12, t*.05))*2. - 1.);',
-    '  float ca = pow(rd, 9.)*smoothstep(.35, .75, fbm(q*2.5 - t*.04));',
-    '  c *= 1. + sl*.16*w;',
-    '  c += vec3(.85, 1., .97)*ca*.10*w;',
-    // foam brightens a little as each wave comes in
-    '  c += vec3(.06)*s*max(sw, 0.)*.6;',
+    '    float sl = fbm(q*3.5 + vec2(t*.05, -t*.08)) - .5;',
+    '    vec2 wq = q*11. + 1.6*vec2(fbm(q*4. + t*.09), fbm(q*4. + 9.3 - t*.07));',
+    '    float rd = 1. - abs(fbm(wq + vec2(t*.12, t*.05))*2. - 1.);',
+    '    float ca = pow(rd, 9.)*smoothstep(.35, .75, fbm(q*2.5 - t*.04));',
+    '    mul = 1. + sl*.16*w;',
+    '    add = vec3(.85, 1., .97)*ca*.10*w + vec3(.06)*s*max(sw, 0.)*.6;', // foam brightens a little as each wave comes in
+    '  }',
+    '  vec3 c = texture2D(u_img, uv + off/u_rect.zw).rgb*mul + add;',
     '  gl_FragColor = vec4(c, 1.);',
     '}'
   ].join('\n');
