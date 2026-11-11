@@ -1,4 +1,4 @@
-/* ReiseGlück (Demo) – Reise-Detailseite: reise.html?id=<id>
+/* ReiseGlück (Demo) – Reise-Detailseite: reise?id=<id>
    Daten: data/offers.js (Preis, Leistungen) + data/galleries.js (Fotos, Texte). */
 (function () {
   'use strict';
@@ -18,7 +18,7 @@
     F('gallery').remove();
     var main = doc.querySelector('.detail-layout');
     main.textContent = '';
-    main.appendChild(h('p', { class: 'lead' }, ['Vielleicht hat sich der Link geändert. Alle Reisen finden Sie unter ', h('a', { href: 'reisen.html', text: 'Reisen' }), '.']));
+    main.appendChild(h('p', { class: 'lead' }, ['Vielleicht hat sich der Link geändert. Alle Reisen finden Sie unter ', h('a', { href: 'reisen', text: 'Reisen' }), '.']));
     F('more-section').remove();
     return;
   }
@@ -67,7 +67,7 @@
   [['Dauer', it.dauer, 'calendar'], ['Leistungen', (it.inklusive || ['Flug', 'Hotel']).join(' · '), 'suitcase'], ['Basis', zimmer, 'bed']].concat(it.zusatz ? [['Hinweis', it.zusatz, 'info']] : []).forEach(function (r) {
     F('aside-details').appendChild(h('li', null, [h('span', { class: 'd-label', text: r[0] }), h('span', { class: 'd-val', text: r[1] }), icon(r[2])]));
   });
-  F('aside-book').setAttribute('href', 'buchen.html?item=' + encodeURIComponent(it.id));
+  F('aside-book').setAttribute('href', 'buchen?item=' + encodeURIComponent(it.id));
   F('aside-book').setAttribute('aria-label', 'Reise buchen: ' + it.name);
 
   /* ---------- related ---------- */

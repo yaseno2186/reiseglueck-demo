@@ -3,6 +3,12 @@
   'use strict';
   var doc = document, root = doc.documentElement;
   root.classList.add('js');
+
+  /* ---------- Saubere Adressen: alte Links auf "seite.html" zeigen in der Adresszeile "seite" (GitHub Pages liefert beides aus) ---------- */
+  try {
+    var path = window.location.pathname, clean = path.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    if (clean !== path && window.location.protocol !== 'file:') history.replaceState(history.state, '', clean + window.location.search + window.location.hash);
+  } catch (e) { }
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   /* ---------- DOM helper (nur textContent, kein innerHTML für Daten) ---------- */
@@ -137,8 +143,8 @@
   window.RG_UI.imgFor = imgFor;
   window.RG_UI.card = function (it, i) { return card(it, i); };
 
-  function bookHref(id) { return 'buchen.html?item=' + encodeURIComponent(id); }
-  function detailHref(id) { return 'reise.html?id=' + encodeURIComponent(id); }
+  function bookHref(id) { return 'buchen?item=' + encodeURIComponent(id); }
+  function detailHref(id) { return 'reise?id=' + encodeURIComponent(id); }
 
   function detailRow(label, value, ic) {
     return h('li', null, [h('span', { class: 'd-label', text: label }), h('span', { class: 'd-val', text: value }), icon(ic)]);

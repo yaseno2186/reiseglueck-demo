@@ -15,10 +15,10 @@
 ## Lokal ansehen
 
 ```bash
-python -m http.server 8090
+npx serve -l 8090
 ```
 
-Dann `http://localhost:8090` öffnen.
+Dann `http://localhost:8090` öffnen. Die Links haben keine Endung (`/termin` statt `/termin.html`); GitHub Pages und `serve` ordnen sie der passenden `.html`-Datei zu. `python -m http.server` kann das nicht, dort führen die Links ins Leere.
 
 ## Bildnachweise
 
