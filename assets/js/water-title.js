@@ -10,8 +10,8 @@
   'use strict';
   var wrap = document.querySelector('[data-water-title]');
   if (!wrap) return;
-  var h1 = wrap.querySelector('h1');
-  var hero = wrap.closest('.hero') || wrap.parentNode;
+  var h1 = wrap.querySelector('[data-water-text]') || wrap.querySelector('h1');
+  var hero = wrap.closest('.hero, .intro-loader') || wrap.parentNode;
   // read the word now: motion.js later splits the h1 into a screen-reader copy + animated spans
   var TEXT = h1.textContent.replace(/\s+/g, ' ').trim();
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -373,7 +373,7 @@
   function idleStep(now) { if (!running) return; setTime(now); render(1e9); raf = requestAnimationFrame(idleStep); }
   function idle() { if (running || !finished || reduce || !visible || document.hidden) return; running = true; raf = requestAnimationFrame(idleStep); }
   function stopIdle() { running = false; cancelAnimationFrame(raf); }
-  function showFinal() { finished = true; sizeCanvas(false); setTime(performance.now()); render(1e9); idle(); }
+  function showFinal() { finished = true; sizeCanvas(false); setTime(performance.now()); render(1e9); idle(); wrap.dispatchEvent(new CustomEvent('water:done')); }
 
   function init() {
     try { buildSDF(); } catch (e) { fail(); return; }

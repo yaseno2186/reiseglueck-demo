@@ -19,6 +19,8 @@
 <link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" as="image" href="assets/img/strand-palmen-1200.webp" imagesrcset="assets/img/strand-palmen-1200.webp 1200w, assets/img/strand-palmen-2400.webp 2400w" imagesizes="100vw" fetchpriority="high">
 <link rel="stylesheet" href="assets/css/style.css?v=25">
+<link rel="stylesheet" href="assets/css/loader.css?v=2">
+<script>try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("rg-intro")&&!location.hash)document.documentElement.className+=" intro intro-run"}catch(e){}</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -39,6 +41,11 @@
 </script>
 </head>
 <body class="has-hero">
+<div class="intro-loader" role="status" aria-label="Seite wird geladen">
+  <span class="vh">Seite wird geladen</span>
+  <div class="intro-water" data-water-title aria-hidden="true"><p class="intro-text" data-water-text>Fernweh</p></div>
+  <p class="word" aria-hidden="true">ReiseGlück</p>
+</div>
 <a class="skip" href="#main">Zum Inhalt springen</a>
 <header class="site-header">
   <div class="frame">
@@ -90,7 +97,7 @@
     <img src="assets/img/strand-palmen-1200.webp" srcset="assets/img/strand-palmen-1200.webp 1200w, assets/img/strand-palmen-2400.webp 2400w" sizes="100vw" width="2400" height="1656" alt="Palmenstrand mit türkisem Meer, von oben fotografiert" fetchpriority="high" decoding="async">
   </div>
   <div class="frame hero-content">
-    <div class="wave-title" data-water-title>
+    <div class="wave-title">
       <h1 id="hero-title">Fernweh</h1>
     </div>
     <p class="hero-lead" data-hero style="--d:9">Ihr Traumurlaub, persönlich geplant.<br> Flug, Hotel und Ausflüge aus einer Hand.</p>
@@ -346,6 +353,8 @@
 <script src="data/reviews.js?v=23" defer></script>
 <script src="assets/js/site.js?v=23" defer></script>
 <script src="assets/js/reviews.js?v=23" defer></script>
+<script src="assets/js/water-title.js?v=31" defer></script>
+<script src="assets/js/loader.js?v=2" defer></script>
 <script src="assets/js/motion.js?v=23" defer></script>
 </body>
 </html>

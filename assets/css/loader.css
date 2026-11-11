@@ -1,0 +1,28 @@
+/* Intro-Ladebildschirm: der Wassertropfen aus water-title.js fällt, fließt zu "Fernweh" und spritzt;
+   danach öffnet sich die Seite kreisförmig aus der Mitte. Einmal pro Sitzung; bei "Bewegung reduzieren" gar nicht. */
+@property --r { syntax: "<length>"; inherits: false; initial-value: -40px; }
+.intro-loader { display: none; }
+html.intro-run .intro-loader { display: grid; place-items: center; position: fixed; inset: 0; z-index: 9999; overflow: hidden; cursor: pointer;
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, #14396f 0%, #0e2449 55%, #08162f 100%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--r), #000 calc(var(--r) + 40px));
+          mask-image: radial-gradient(circle at 50% 50%, transparent var(--r), #000 calc(var(--r) + 40px)); }
+html.intro-run .intro-loader.go { animation: intro-reveal 1.15s cubic-bezier(.65, 0, .35, 1) both; }
+html.intro-run .intro-loader.fade { -webkit-mask-image: none; mask-image: none; }
+html.intro-run .intro-loader.fade.go { animation: intro-fade .7s ease both; }
+@keyframes intro-reveal { from { --r: -40px; } to { --r: 160vmax; } }
+@keyframes intro-fade { to { opacity: 0; } }
+.intro-water { position: relative; padding: 0 16px; }
+.intro-text { margin: 0; text-align: center; color: #fff; font-family: var(--f-display); font-variation-settings: "opsz" 96; font-weight: 700;
+  font-size: clamp(3.6rem, 14vw, 13rem); line-height: .9; letter-spacing: -.02em; }
+.intro-water:not(.has-water) .intro-text { opacity: 0; }
+.intro-water.has-water .intro-text { color: transparent; }
+.intro-water.no-water .intro-text { opacity: 1; transition: opacity .6s ease; }
+.intro-loader .word { position: absolute; left: 0; right: 0; bottom: 14%; margin: 0; text-align: center; color: #bfddf5; opacity: 0;
+  font: 600 .9rem/1 var(--f-display, system-ui, sans-serif); letter-spacing: .32em; text-transform: uppercase; animation: intro-word .8s ease .2s forwards; }
+.intro-loader.go .word { opacity: 0; transition: opacity .3s ease; animation: none; }
+@keyframes intro-word { from { opacity: 0; transform: translateY(8px); } to { opacity: .85; transform: none; } }
+.intro-loader .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* hero waits behind the loader and starts as it opens */
+html.intro .hero, html.intro .hero * { animation-play-state: paused !important; }
+.wave-title h1 { animation-delay: .35s !important; }
+@media (prefers-reduced-motion: reduce) { .intro-loader { display: none !important; } }
