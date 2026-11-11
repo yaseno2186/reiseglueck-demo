@@ -31,3 +31,11 @@ Note: scroll-craft's kie.mjs script sends prompts and uploaded images to api.kie
 Skipped from caveman: caveman-setup, caveman-manage, caveman-optimize, caveman-discover. These send work through Caveman Cloud (caveman.so). Their hooks (src/hooks) were not installed, so caveman-stats and the mode tracking in `caveman` will not work here.
 Skipped from the others: ui-ux-pro-max's `cli/`, the `.agents/` developer skills in archify, and all plugin/hook folders.
 Note: archify checks https://tt-a1i.github.io/archify/skill-updates/archify/stable.json for updates.
+
+## Batch 3
+
+| Source repo (commit) | License | Skills |
+|---|---|---|
+| uditakhourii/adhd (47beee2) | MIT | adhd (SKILL.md and SOURCE-SPEC.md only; the npm CLI in the repo is not installed) |
+
+Note: the adhd skill runs about 10 Agent calls per use (5 to 10 times the cost of one answer).
