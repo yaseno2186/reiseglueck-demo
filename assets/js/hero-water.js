@@ -19,7 +19,7 @@
   var VS = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0., 1.); }';
   var FS = [
     'precision highp float;',
-    'uniform sampler2D u_img, u_mask; uniform vec2 u_res; uniform vec4 u_rect; uniform float u_t;',
+    'uniform sampler2D u_img, u_mask; uniform vec2 u_res; uniform vec4 u_rect; uniform float u_t, u_k;',
     'float h(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7)))*43758.5453); }',
     'float n(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.-2.*f);',
     '  return mix(mix(h(i), h(i+vec2(1,0)), f.x), mix(h(i+vec2(0,1)), h(i+vec2(1,1)), f.x), f.y); }',
@@ -28,26 +28,32 @@
     '  vec2 px = vec2(gl_FragCoord.x, u_res.y - gl_FragCoord.y);',
     '  vec2 uv = (px - u_rect.xy)/u_rect.zw;',
     '  vec3 m = texture2D(u_mask, uv).rgb; float w = m.r, s = m.g;',
-    '  if (w + s < .003) { gl_FragColor = vec4(texture2D(u_img, uv).rgb, 1.); return; }', // sand and palms: the photo, untouched
-    '  vec2 q = uv*vec2(u_rect.z/u_rect.w, 1.);',      // aspect-correct, 1 unit = image height
-    '  float t = u_t;',
+    // the photo is always sampled outside the branch: texture lookups inside non-uniform control flow get broken
+    // mip-level derivatives on the GPU, which showed as a dotted line of wrong pixels along the edge of the water
+    '  vec2 off = vec2(0.); float mul = 1.; vec3 add = vec3(0.);',
+    '  if (w + s > .003) {',                              // sand and palms skip the water maths
+    '    vec2 q = uv*vec2(u_rect.z/u_rect.w, 1.);',      // aspect-correct, 1 unit = image height
+    '    float t = u_t;',
     // open water: drifting swell + small choppy ripples
-    '  vec2 d = vec2(fbm(q*7. + vec2(t*.10, t*.06)) - .5, fbm(q*7. + vec2(5.2, 1.3) - vec2(t*.07, t*.11)) - .5)*2.;',
-    '  d += vec2(.35, 1.)*sin(q.y*38. + q.x*9. - t*1.3 + 3.*n(q*3. + t*.05))*.35;',
-    '  vec2 off = d*w*4.;',                               // up to ~4 px
+    '    vec2 d = vec2(fbm(q*6. + vec2(t*.16, t*.10)) - .5, fbm(q*6. + vec2(5.2, 1.3) - vec2(t*.11, t*.17)) - .5)*2.;',
+    '    d += vec2(.35, 1.)*sin(q.y*34. + q.x*8. - t*1.9 + 3.*n(q*3. + t*.08))*.45;',
+    // swell rolling in toward the beach (down the photo): long crests, bent by noise so they never look like a grid
+    '    float ph = q.y*16. + 2.2*fbm(q*2.2 + vec2(t*.05, 0.)) + .8*sin(q.x*3.1) - t*1.25;',
+    '    float crest = pow(.5 + .5*sin(ph), 5.);',
+    '    d.y += (crest - .25)*1.6;',
+    '    off = d*w*7.*u_k;',                              // up to ~7-10 CSS px, whatever the screen density
     // surf band: foam rolls up the beach and back
-    '  float sw = sin(t*.55 + q.x*2.4) + .5*sin(t*.9 - q.x*4.1);',
-    '  off += vec2(.15, 1.)*sw*s*7.;',
-    '  vec3 c = texture2D(u_img, uv + off/u_rect.zw).rgb;',
+    '    float sw = sin(t*.55 + q.x*2.4) + .5*sin(t*.9 - q.x*4.1);',
+    '    off += vec2(.15, 1.)*sw*s*18.*u_k;',
     // light on the water: slow brighter/darker swell patches and thin, irregular caustic ridges
-    '  float sl = fbm(q*3.5 + vec2(t*.05, -t*.08)) - .5;',
-    '  vec2 wq = q*11. + 1.6*vec2(fbm(q*4. + t*.09), fbm(q*4. + 9.3 - t*.07));',
-    '  float rd = 1. - abs(fbm(wq + vec2(t*.12, t*.05))*2. - 1.);',
-    '  float ca = pow(rd, 9.)*smoothstep(.35, .75, fbm(q*2.5 - t*.04));',
-    '  c *= 1. + sl*.16*w;',
-    '  c += vec3(.85, 1., .97)*ca*.10*w;',
-    // foam brightens a little as each wave comes in
-    '  c += vec3(.06)*s*max(sw, 0.)*.6;',
+    '    float sl = fbm(q*3.5 + vec2(t*.05, -t*.08)) - .5;',
+    '    vec2 wq = q*11. + 1.6*vec2(fbm(q*4. + t*.09), fbm(q*4. + 9.3 - t*.07));',
+    '    float rd = 1. - abs(fbm(wq + vec2(t*.12, t*.05))*2. - 1.);',
+    '    float ca = pow(rd, 9.)*smoothstep(.35, .75, fbm(q*2.5 - t*.04));',
+    '    mul = 1. + sl*.32*w - (1. - crest)*.05*w;',       // crests a little lighter, troughs a little darker
+    '    add = vec3(.85, 1., .97)*(ca*.22 + crest*.07)*w + vec3(.10)*s*max(sw, 0.);', // foam brightens as each wave comes in
+    '  }',
+    '  vec3 c = texture2D(u_img, uv + off/u_rect.zw).rgb*mul + add;',
     '  gl_FragColor = vec4(c, 1.);',
     '}'
   ].join('\n');
@@ -61,7 +67,7 @@
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
   var aLoc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(aLoc); gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
-  var U = {}; ['u_img', 'u_mask', 'u_res', 'u_rect', 'u_t'].forEach(function (k) { U[k] = gl.getUniformLocation(prog, k); });
+  var U = {}; ['u_img', 'u_mask', 'u_res', 'u_rect', 'u_t', 'u_k'].forEach(function (k) { U[k] = gl.getUniformLocation(prog, k); });
   gl.uniform1i(U.u_img, 0); gl.uniform1i(U.u_mask, 1);
 
   function texture(unit, source, mip) {
@@ -90,7 +96,7 @@
     var pos = getComputedStyle(img).objectPosition.split(' ');
     var px = parseFloat(pos[0]) / 100, py = parseFloat(pos[1] || pos[0]) / 100;
     if (isNaN(px)) px = .5; if (isNaN(py)) py = .5;
-    gl.uniform2f(U.u_res, W, H);
+    gl.uniform2f(U.u_res, W, H); gl.uniform1f(U.u_k, W / cw);
     // the browser lays the cover-fitted <img> out on whole CSS pixels; do the same so the canvas and the palm cut-out line up exactly
     var sc = Math.max(cw / iw, ch / ih), dw = iw * sc, dh = ih * sc, k = W / cw;
     var x = Math.round((cw - dw) * px), y = Math.round((ch - dh) * py);
