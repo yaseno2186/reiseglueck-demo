@@ -1,5 +1,5 @@
 /* ReiseGlück (Demo) – geführte Buchungsanfrage
-   - Vorauswahl per buchen.html?item=<id>
+   - Vorauswahl per buchen?item=<id>
    - Fortschritt in sessionStorage (nach Bestätigung gelöscht)
    - Nichts wird gesendet oder gespeichert (Demo) */
 (function () {
