@@ -57,7 +57,7 @@
   /* ---------- Header tone: transparent glass header, light text over dark sections ---------- */
   var header = doc.querySelector('.site-header');
   if (header) {
-    var DARK = '.on-dark, .hero, .page-hero, .cta-band, .site-footer';
+    var DARK = '.on-dark, .hero, .page-hero, .cta-band, .site-footer, .intro-loader';
     var toneTick = false;
     var tone = function () {
       toneTick = false;

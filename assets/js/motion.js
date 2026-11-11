@@ -114,12 +114,14 @@
   var hero = doc.querySelector('.hero');
   var heroMedia = hero && hero.querySelector('.hero-media');
   var heroContent = hero && hero.querySelector('.hero-content');
+  var heroPalm = hero && hero.querySelector('.hero-palm-media');
   function paintHero(sy) {
     if (!hero) return;
     var h = hero.offsetHeight || vh;
     if (sy > h * 1.1) return;
     var p = clamp(sy / h, 0, 1);
     heroMedia.style.transform = 'translate3d(0,' + (sy * 0.38).toFixed(1) + 'px,0) scale(' + (1 + p * 0.06).toFixed(4) + ')';
+    if (heroPalm) heroPalm.style.transform = heroMedia.style.transform; // palm stays glued to the photo
     heroContent.style.transform = 'translate3d(0,' + (-sy * 0.18).toFixed(1) + 'px,0)';
     heroContent.style.opacity = String(clamp(1 - p * 1.6, 0, 1).toFixed(3));
     heroContent.style.filter = p > 0.01 ? 'blur(' + (p * 10).toFixed(2) + 'px)' : '';
