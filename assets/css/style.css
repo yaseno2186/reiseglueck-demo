@@ -856,3 +856,4 @@ body:has(:is(input, textarea, select):focus) .edge-bottom, body.lock .edge-blur 
 }
 
 #more-cards { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+.foot-bottom .demo-flag a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
