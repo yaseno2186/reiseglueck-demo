@@ -723,7 +723,7 @@ legend { padding: 0; margin-bottom: var(--s-2); }
   .js h2[data-reveal], .js p[data-reveal], .js li.step[data-reveal], .js li.stat[data-reveal] { filter: blur(10px); }
   .js h2[data-reveal].is-in, .js p[data-reveal].is-in, .js li.step[data-reveal].is-in, .js li.stat[data-reveal].is-in { filter: none; }
   .js .hero [data-hero] { opacity: 0; transform: translateY(28px); filter: blur(10px); animation: hero-in 1.2s var(--ease-expo) forwards; animation-delay: calc(var(--d, 0) * 140ms + 450ms); }
-  .js .hero-media img, .js .hero-palm-zoom { animation: hero-zoom 2.8s var(--ease-expo) both; }
+  .js .hero-media img, .js .hero-palm-zoom, .js .hero-water { animation: hero-zoom 2.8s var(--ease-expo) both; }
 
   /* image reveals: frame opens, photo settles from a slight zoom */
   .js .dest[data-reveal] { opacity: 1; transform: none; clip-path: inset(14% 10% 0 10% round var(--r-lg)); transition: clip-path 1.3s var(--ease-expo); transition-delay: calc(var(--d, 0) * 90ms); }
