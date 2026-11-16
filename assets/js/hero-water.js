@@ -106,16 +106,20 @@
   var raf = 0, visible = true, t0 = performance.now();
   function draw(now) { gl.uniform1f(U.u_t, (now - t0) / 1000); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); }
   function loop(now) { raf = 0; if (!visible || document.hidden) return; draw(now); raf = requestAnimationFrame(loop); }
-  function start() { if (!raf && visible && !document.hidden) raf = requestAnimationFrame(loop); }
+  // while the intro loader covers the page the canvas only holds its first frame; the waves start the moment the loader opens
+  var root = document.documentElement, held = root.classList.contains('intro'), ready = false;
+  function start() { if (!raf && ready && !held && visible && !document.hidden) raf = requestAnimationFrame(loop); }
+  if (held) new MutationObserver(function (m, o) {
+    if (root.classList.contains('intro')) return;
+    o.disconnect(); held = false; start();
+  }).observe(root, { attributes: true, attributeFilter: ['class'] });
 
-  // only fade the moving water in once the photo's intro zoom is over, so nothing has to be kept in sync
-  function zoomDone() {
-    return new Promise(function (ok) {
-      var a = img.getAnimations ? img.getAnimations() : null;
-      if (a && !a.length) return ok();
-      img.addEventListener('animationend', function () { ok(); }, { once: true });
-      if (!a) setTimeout(ok, 3500);
-    });
+  // the photo zooms in when the page opens (CSS animation on the <img>); give the canvas the same zoom at the same point in time
+  function syncZoom() {
+    if (!img.getAnimations || !canvas.getAnimations) return;
+    var a = img.getAnimations()[0], b = canvas.getAnimations()[0];
+    if (!a || !b) return;
+    if (a.startTime != null) b.startTime = a.startTime; else b.currentTime = a.currentTime; // running: identical start; held behind the loader: identical position
   }
 
   // pick the photo file for the size it is drawn at (device pixels), within the GPU's texture limit
@@ -126,13 +130,14 @@
     for (var i = 0; i < files.length; i++) if (files[i] >= need * .9) break;
     return 'assets/img/strand-palmen-' + files[Math.min(i, files.length - 1)] + '.webp?v=2';
   }
-  Promise.all([loadImage(pickSource()), loadImage('assets/img/strand-palmen-wasser.png'), zoomDone()]).then(function (r) {
+  Promise.all([loadImage(pickSource()), loadImage('assets/img/strand-palmen-wasser.png')]).then(function (r) {
     iw = r[0].naturalWidth; ih = r[0].naturalHeight;
     texture(0, r[0], true); texture(1, r[1], false);
     media.appendChild(canvas);
     size(); draw(performance.now());
+    syncZoom();
     requestAnimationFrame(function () { canvas.classList.add('on'); });
-    start();
+    ready = true; start();
     addEventListener('resize', function () { size(); if (!raf) draw(performance.now()); });
     document.addEventListener('visibilitychange', start);
     if (window.IntersectionObserver) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; start(); }).observe(media.parentNode);
